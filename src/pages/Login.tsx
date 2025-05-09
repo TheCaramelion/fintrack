@@ -1,22 +1,47 @@
-import type React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase.ts';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../context/UserContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { setUserDoc } = useUserContext();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // Log in the user
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Check if the user's document exists in Firestore
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        // If the document doesn't exist, create it
+        const newUserDoc = {
+          email: user.email,
+          lastLogin: new Date(),
+        };
+
+        await setDoc(userDocRef, newUserDoc);
+        setUserDoc(newUserDoc); // Store the new document in context
+        console.log('New user document created:', newUserDoc);
+      } else {
+        setUserDoc(userDoc.data()); // Store the existing document in context
+        console.log('User document already exists:', userDoc.data());
+      }
+
+      // Navigate to the dashboard
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message);

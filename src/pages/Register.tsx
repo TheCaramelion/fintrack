@@ -2,7 +2,8 @@ import type React from 'react';
 import { useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -22,9 +23,19 @@ export default function Register() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const userDoc = {
+        email: user.email,
+        createdAt: new Date(),
+      };
+
+      await setDoc(doc(db, 'users', user.uid), userDoc);
+
       setSuccess('User registered successfully!');
       console.log('User registered successfully');
+      
     } catch (err: any) {
       setError(err.message);
     }
