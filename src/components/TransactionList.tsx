@@ -45,7 +45,7 @@ const TransactionList = () => {
         }));
 
         setTransactions(transactionsData);
-        } catch (err: any) {
+        } catch (err: unknown) {
         setError('Failed to fetch transactions. Please try again.');
         console.error('Error fetching transactions:', err);
         }
@@ -70,7 +70,7 @@ const TransactionList = () => {
         setTransactions((prev) => prev.filter((transaction) => transaction.id !== transactionToDelete));
         setTransactionToDelete(null);
         setDeleteDialogOpen(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
         setError('Failed to delete transaction. Please try again.');
         console.error('Error deleting transaction:', err);
     }

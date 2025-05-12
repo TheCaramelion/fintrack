@@ -29,7 +29,7 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
     setDrawerOpen(false);
   };
 
-  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -40,7 +40,6 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   const handleLogout = () => {
     try {
       signOut(auth);
-      console.log('User logged out.');
       navigate('/');
     } catch (error) {
       console.error('Error singing out: ', error)

@@ -34,8 +34,8 @@ const CategoryForm = () => {
         });
 
         setSuccess('Category created successfully!');
-        setCategoryName(''); // Clear the input field
-    } catch (err: any) {
+        setCategoryName('');
+    } catch (err: unknown) {
         setError('Failed to create category. Please try again.');
         console.error('Error creating category:', err);
     }

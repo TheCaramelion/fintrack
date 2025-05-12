@@ -44,7 +44,7 @@ const TransactionFilter = () => {
             }));
 
             setTransactions(transactionsData);
-        } catch (err: any) {
+        } catch (err: unknown) {
             setError('Failed to fetch transactions. Please try again.');
             console.error('Error fetching transactions:', err);
         }

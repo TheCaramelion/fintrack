@@ -7,7 +7,7 @@ const TransactionForm = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [amount, setAmount] = useState('');
-    const [transactionType, setTransactionType] = useState<'income' | 'expense'>('expense'); // Default to "Expense"
+    const [transactionType, setTransactionType] = useState<'income' | 'expense'>('expense');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
@@ -30,7 +30,7 @@ const TransactionForm = () => {
                 }));
 
                 setCategories(categoriesData);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 setError('Failed to fetch categories. Please try again.');
                 console.error('Error fetching categories:', err);
             }
