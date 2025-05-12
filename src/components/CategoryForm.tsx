@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { auth, db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
-const CategoryForm: React.FC = () => {
+const CategoryForm = () => {
   const [categoryName, setCategoryName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError(null);
     setSuccess(null);

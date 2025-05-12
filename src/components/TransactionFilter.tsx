@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography, Button, List, ListItem, ListItemText, Alert, TextField, Chip } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { auth, db } from '../firebase';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 
-const TransactionFilter: React.FC = () => {
+const TransactionFilter = () => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [transactions, setTransactions] = useState<any[]>([]);

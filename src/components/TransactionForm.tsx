@@ -3,7 +3,7 @@ import { TextField, Button, Box, Typography, Alert, MenuItem, FormControl, FormL
 import { auth, db } from '../firebase';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 
-const TransactionForm: React.FC = () => {
+const TransactionForm = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [amount, setAmount] = useState('');
