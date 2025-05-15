@@ -1,5 +1,6 @@
 import AppLayout from "../components/AppLayout";
 import useAuthRedirect from "../hooks/useAuthRedirect";
+import { Box } from '@mui/material';
 
 export default function Profile() {
     useAuthRedirect();
@@ -7,7 +8,7 @@ export default function Profile() {
     return (
         <>
             <AppLayout>
-                
+                <Box/>
             </AppLayout>
         </>
     )

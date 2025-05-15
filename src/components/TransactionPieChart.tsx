@@ -50,7 +50,7 @@ const TransactionPieChart = () => {
     }, []);
 
     return (
-        <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 2 }}>
+        <Box sx={{ maxWidth: 800, margin: '0 auto', padding: 2 }}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
                 Income and Expense Breakdown
             </Typography>

@@ -22,13 +22,13 @@ const PersistentDrawer: FunctionComponent<SideDrawer> = ({ open, onClose, onNavi
         </Box>
         <Box sx={{ width: 250 }} role="presentation">
         <List>
-        <ListItem button onClick={() => onNavigate('/dashboard')}>
+        <ListItem component="button" onClick={() => onNavigate('/dashboard')} style={{ all: 'unset', cursor: 'pointer' }}>
             <ListItemText>Dashboard</ListItemText>
         </ListItem>
-        <ListItem button onClick={() => onNavigate('/transactions')}>
+        <ListItem component="button" onClick={() => onNavigate('/transactions')} style={{ all: 'unset', cursor: 'pointer '}}>
             <ListItemText>Transactions</ListItemText>
         </ListItem>
-        <ListItem button onClick={() => onNavigate('/categories')}>
+        <ListItem component="button" onClick={() => onNavigate('/categories')} style={{ all: 'unset', cursor: 'pointer'}}>
             <ListItemText>Categories</ListItemText>
         </ListItem>
         <ListItem>
