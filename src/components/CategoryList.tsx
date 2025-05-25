@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import {
@@ -19,7 +19,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const CategoryList: React.FC = () => {
+const CategoryList = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

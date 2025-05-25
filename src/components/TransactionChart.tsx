@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { auth, db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { Box, Typography, Alert } from '@mui/material';
 
-const TransactionChart: React.FC = () => {
+const TransactionChart = () => {
     const [expenses, setExpenses] = useState<number>(0);
     const [incomes, setIncomes] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ const TransactionChart: React.FC = () => {
 
                 setExpenses(totalExpenses);
                 setIncomes(totalIncomes);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 setError('Failed to fetch transactions. Please try again.');
                 console.error('Error fetching transactions:', err);
             }

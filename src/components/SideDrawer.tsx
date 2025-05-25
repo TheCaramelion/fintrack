@@ -1,4 +1,4 @@
-import React from 'react';
+import { FunctionComponent } from 'react';
 import { Drawer, Box, List, ListItem, IconButton, ListItemText, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -8,7 +8,7 @@ interface SideDrawer {
     onNavigate: (path: string) => void;
 }
 
-const PersistentDrawer: React.FC<SideDrawer> = ({ open, onClose, onNavigate }) => {
+const PersistentDrawer: FunctionComponent<SideDrawer> = ({ open, onClose, onNavigate }) => {
     return (
     <Drawer variant="persistent" anchor="left" open={open}>
         <Box
@@ -22,13 +22,13 @@ const PersistentDrawer: React.FC<SideDrawer> = ({ open, onClose, onNavigate }) =
         </Box>
         <Box sx={{ width: 250 }} role="presentation">
         <List>
-        <ListItem button onClick={() => onNavigate('/dashboard')}>
+        <ListItem component="button" onClick={() => onNavigate('/dashboard')} style={{ all: 'unset', cursor: 'pointer' }}>
             <ListItemText>Dashboard</ListItemText>
         </ListItem>
-        <ListItem button onClick={() => onNavigate('/transactions')}>
+        <ListItem component="button" onClick={() => onNavigate('/transactions')} style={{ all: 'unset', cursor: 'pointer '}}>
             <ListItemText>Transactions</ListItemText>
         </ListItem>
-        <ListItem button onClick={() => onNavigate('/categories')}>
+        <ListItem component="button" onClick={() => onNavigate('/categories')} style={{ all: 'unset', cursor: 'pointer'}}>
             <ListItemText>Categories</ListItemText>
         </ListItem>
         <ListItem>

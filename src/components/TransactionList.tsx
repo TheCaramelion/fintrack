@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import {
@@ -20,7 +20,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const TransactionList: React.FC = () => {
+const TransactionList = () => {
     const [transactions, setTransactions] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -45,7 +45,7 @@ const TransactionList: React.FC = () => {
         }));
 
         setTransactions(transactionsData);
-        } catch (err: any) {
+        } catch (err: unknown) {
         setError('Failed to fetch transactions. Please try again.');
         console.error('Error fetching transactions:', err);
         }
@@ -70,7 +70,7 @@ const TransactionList: React.FC = () => {
         setTransactions((prev) => prev.filter((transaction) => transaction.id !== transactionToDelete));
         setTransactionToDelete(null);
         setDeleteDialogOpen(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
         setError('Failed to delete transaction. Please try again.');
         console.error('Error deleting transaction:', err);
     }

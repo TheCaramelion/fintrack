@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -34,7 +34,7 @@ export default function Login() {
         setUserDoc(newUserDoc);
         console.log('New user document created:', newUserDoc);
       } else {
-        setUserDoc(userDoc.data()); 
+        setUserDoc(userDoc.data());
         console.log('User document already exists:', userDoc.data());
       }
 

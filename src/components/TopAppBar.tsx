@@ -1,4 +1,4 @@
-import React from 'react';
+import { FunctionComponent } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -18,7 +18,7 @@ interface TopAppBar {
   onLogout: () => void;
 }
 
-const CustomAppBar: React.FC<TopAppBar> = ({
+const CustomAppBar: FunctionComponent<TopAppBar> = ({
   onMenuClick,
   anchorEl,
   onMenuOpen,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, FunctionComponent, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
@@ -6,10 +6,10 @@ import TopAppBar from './TopAppBar';
 import SideDrawer from './SideDrawer';
 
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -40,7 +40,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const handleLogout = () => {
     try {
       signOut(auth);
-      console.log('User logged out.');
       navigate('/');
     } catch (error) {
       console.error('Error singing out: ', error)

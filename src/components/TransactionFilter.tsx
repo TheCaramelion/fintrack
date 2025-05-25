@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography, Button, List, ListItem, ListItemText, Alert, TextField, Chip } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { es } from 'date-fns/locale/es';
 import { format } from 'date-fns';
 import { auth, db } from '../firebase';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 
-const TransactionFilter: React.FC = () => {
+const TransactionFilter = () => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
-    const [transactions, setTransactions] = useState<any[]>([]);
+    interface Transaction {
+        id: string;
+        category: string;
+        amount: number;
+        createdAt: { seconds: number; nanoseconds: number };
+        type: 'income' | 'expense';
+    }
+
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     const handleFilter = async () => {
@@ -38,20 +47,26 @@ const TransactionFilter: React.FC = () => {
 
             const querySnapshot = await getDocs(q);
 
-            const transactionsData = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
+            const transactionsData = querySnapshot.docs.map((doc) => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    category: data.category,
+                    amount: data.amount,
+                    createdAt: data.createdAt,
+                    type: data.type,
+                } as Transaction;
+            });
 
             setTransactions(transactionsData);
-        } catch (err: any) {
+        } catch (err: unknown) {
             setError('Failed to fetch transactions. Please try again.');
             console.error('Error fetching transactions:', err);
         }
     };
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <Box
                 sx={{
                     maxWidth: 600,
@@ -69,13 +84,17 @@ const TransactionFilter: React.FC = () => {
                         label="Start Date"
                         value={startDate}
                         onChange={(newValue) => setStartDate(newValue)}
-                        renderInput={(params) => <TextField {...params} fullWidth />}
+                        enableAccessibleFieldDOMStructure={false}
+                        slots={{ textField: TextField }}
+                        slotProps={{ textField: { fullWidth: true } }}
                     />
                     <DatePicker
                         label="End Date"
                         value={endDate}
                         onChange={(newValue) => setEndDate(newValue)}
-                        renderInput={(params) => <TextField {...params} fullWidth />}
+                        enableAccessibleFieldDOMStructure={false}
+                        slots={{ textField: TextField }}
+                        slotProps={{ textField: { fullWidth: true } }}
                     />
                 </Box>
                 <Button
