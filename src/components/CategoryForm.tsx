@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { auth, db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
