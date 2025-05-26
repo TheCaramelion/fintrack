@@ -1,3 +1,4 @@
+import { Grid } from '@mui/material';
 import AppLayout from '../components/AppLayout';
 import TransactionChart from '../components/TransactionChart';
 import TransactionFilter from '../components/TransactionFilter';
@@ -12,6 +13,11 @@ export default function Transactions() {
   return (
     <>
       <AppLayout>
+        <Grid>
+          <Grid xs={12} maxWidth={6}>
+
+          </Grid>
+        </Grid>
         <TransactionForm/>
         <TransactionList/>
         <TransactionFilter/>
