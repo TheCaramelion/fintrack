@@ -14,9 +14,6 @@ export default function Transactions() {
     <>
       <AppLayout>
         <Grid>
-          <Grid xs={12} maxWidth={6}>
-
-          </Grid>
         </Grid>
         <TransactionForm/>
         <TransactionList/>
