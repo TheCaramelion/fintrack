@@ -25,14 +25,14 @@ const TransactionChart = () => {
                 let totalExpenses = 0;
                 let totalIncomes = 0;
 
-                querySnapshot.forEach((doc) => {
+                for (const doc of querySnapshot.docs) {
                     const data = doc.data();
                     if (data.type === 'expense') {
                         totalExpenses += data.amount;
                     } else if (data.type === 'income') {
                         totalIncomes += data.amount;
                     }
-                });
+                }
 
                 setExpenses(totalExpenses);
                 setIncomes(totalIncomes);

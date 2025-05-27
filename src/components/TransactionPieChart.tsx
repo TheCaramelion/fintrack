@@ -25,14 +25,15 @@ const TransactionPieChart = () => {
                 const incomeMap: Record<string, number> = {};
                 const expenseMap: Record<string, number> = {};
 
-                querySnapshot.forEach((doc) => {
+                
+                for (const doc of querySnapshot.docs) {
                     const data = doc.data();
                     if (data.type === 'income') {
                         incomeMap[data.category] = (incomeMap[data.category] || 0) + data.amount;
                     } else if (data.type === 'expense') {
                         expenseMap[data.category] = (expenseMap[data.category] || 0) + data.amount;
                     }
-                });
+                }
 
                 setIncomeData(
                     Object.entries(incomeMap).map(([label, value]) => ({ label, value }))

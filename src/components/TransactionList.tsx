@@ -128,13 +128,13 @@ const TransactionList = () => {
                 }
             >
                 <ListItemText
-                primary={`${transaction.category} - $${transaction.amount}`}
+                primary={`${transaction.category} - ${transaction.amount}€`}
                 secondary={new Date(transaction.createdAt.seconds * 1000).toLocaleDateString()}
                 />
                 <Chip
                 label={transaction.type === 'income' ? 'Income' : 'Expense'}
                 color={transaction.type === 'income' ? 'success' : 'error'}
-                sx={{ marginLeft: 2 }}
+                sx={{ marginLeft: 2, marginRight: 2 }}
                 />
             </ListItem>
             ))}

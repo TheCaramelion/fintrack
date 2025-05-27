@@ -1,6 +1,6 @@
 import { useState, useEffect, type FunctionComponent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { auth } from '../firebase';
 import TopAppBar from './TopAppBar';
 import SideDrawer from './SideDrawer';

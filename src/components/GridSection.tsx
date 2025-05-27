@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import { FunctionComponent, ReactNode } from "react";
+import type { FunctionComponent, ReactNode } from "react";
 
 interface GridSectionProps {
     children: ReactNode;

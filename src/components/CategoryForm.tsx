@@ -4,11 +4,11 @@ import { auth, db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
 const CategoryForm = () => {
-  const [categoryName, setCategoryName] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+const [categoryName, setCategoryName] = useState('');
+const [error, setError] = useState<string | null>(null);
+const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async (event: FormEvent) => {
+const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError(null);
     setSuccess(null);

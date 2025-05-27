@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 import { TextField, Button, Box, Typography, Alert, MenuItem, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { auth, db } from '../firebase';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
@@ -56,7 +57,7 @@ const TransactionForm = () => {
             return;
         }
 
-        if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+        if (!amount || Number.isNaN(Number(amount)) || Number(amount) <= 0) {
             setError('Please enter a valid amount.');
             return;
         }
