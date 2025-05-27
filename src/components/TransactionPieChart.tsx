@@ -41,7 +41,7 @@ const TransactionPieChart = () => {
                 setExpenseData(
                     Object.entries(expenseMap).map(([label, value]) => ({ label, value }))
                 );
-            } catch (err: any) {
+            } catch (err: unknown) {
                 setError('Failed to fetch transactions. Please try again.');
                 console.error('Error fetching transactions:', err);
             }

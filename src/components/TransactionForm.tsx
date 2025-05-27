@@ -2,7 +2,7 @@ import type React from 'react';
 import { useState, useEffect } from 'react';
 import { TextField, Button, Box, Typography, Alert, MenuItem, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { auth, db } from '../firebase';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 
 const TransactionForm = () => {
     const [categories, setCategories] = useState<any[]>([]);
@@ -13,31 +13,25 @@ const TransactionForm = () => {
     const [success, setSuccess] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            const user = auth.currentUser;
+        const user = auth.currentUser;
+        if (!user) {
+            setError('You must be logged in to create a transaction.');
+            return;
+        }
 
-            if (!user) {
-                setError('You must be logged in to create a transaction.');
-                return;
-            }
+        const categoriesRef = collection(db, 'users', user.uid, 'categories');
+        const unsubscribe = onSnapshot(categoriesRef, (querySnapshot) => {
+            const categoriesData = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setCategories(categoriesData);
+        }, (err) => {
+            setError('Failed to fetch categories. Please try again.');
+            console.error('Error fetching categories:', err);
+        });
 
-            try {
-                const categoriesRef = collection(db, 'users', user.uid, 'categories');
-                const querySnapshot = await getDocs(categoriesRef);
-
-                const categoriesData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-
-                setCategories(categoriesData);
-            } catch (err: unknown) {
-                setError('Failed to fetch categories. Please try again.');
-                console.error('Error fetching categories:', err);
-            }
-        };
-
-        fetchCategories();
+        return () => unsubscribe();
     }, []);
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -76,7 +70,7 @@ const TransactionForm = () => {
             setSelectedCategory('');
             setAmount('');
             setTransactionType('expense');
-        } catch (err: any) {
+        } catch (err: unknown) {
             setError('Failed to create transaction. Please try again.');
             console.error('Error creating transaction:', err);
         }

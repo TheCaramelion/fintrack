@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { auth, db } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { Box, Typography, Alert } from '@mui/material';
 
 const TransactionChart = () => {
@@ -10,39 +10,38 @@ const TransactionChart = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchTransactions = async () => {
-            const user = auth.currentUser;
+        const user = auth.currentUser;
+        if (!user) {
+            setError('You must be logged in to view the chart.');
+            return;
+        }
 
-            if (!user) {
-                setError('You must be logged in to view the chart.');
-                return;
-            }
-
-            try {
-                const transactionsRef = collection(db, 'users', user.uid, 'transactions');
-                const querySnapshot = await getDocs(transactionsRef);
-
+        const transactionsRef = collection(db, 'users', user.uid, 'transactions');
+        const unsubscribe = onSnapshot(
+            transactionsRef,
+            (querySnapshot) => {
                 let totalExpenses = 0;
                 let totalIncomes = 0;
 
                 for (const doc of querySnapshot.docs) {
                     const data = doc.data();
                     if (data.type === 'expense') {
-                        totalExpenses += data.amount;
+                        totalExpenses += Number(data.amount);
                     } else if (data.type === 'income') {
-                        totalIncomes += data.amount;
+                        totalIncomes += Number(data.amount);
                     }
                 }
 
                 setExpenses(totalExpenses);
                 setIncomes(totalIncomes);
-            } catch (err: unknown) {
+            },
+            (err) => {
                 setError('Failed to fetch transactions. Please try again.');
                 console.error('Error fetching transactions:', err);
             }
-        };
+        );
 
-        fetchTransactions();
+        return () => unsubscribe();
     }, []);
 
     const data = [
