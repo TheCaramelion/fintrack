@@ -3,29 +3,30 @@ import useAuthRedirect from '../hooks/useAuthRedirect';
 import TransactionList from '../components/TransactionList';
 import CategoryList from '../components/CategoryList';
 import TransactionChart from '../components/TransactionChart';
-import { Typography, Grid, Paper } from '@mui/material';
-import GridSection from '../components/GridSection';
+import { Grid } from '@mui/material';
+import StyledPaper from '../styledComponents/StyledPaper';
 
 export default function Dashboard() {
   useAuthRedirect();
 
   return (
     <AppLayout>
-        <Typography variant="h4" sx={{ mb: 4, fontWeight: 700, color: '#388e3c' }}>
-          Dashboard
-        </Typography>
         <Grid container spacing={4}>
-          <Grid size={4}>
-            <Paper elevation={3} sx={{ p: 2, height: '100%'}}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <StyledPaper elevation={3}>
               <TransactionList />
-            </Paper>
+            </StyledPaper>
           </Grid>
-          <GridSection>
-            <TransactionChart/>
-          </GridSection>
-          <GridSection>
-            <CategoryList />
-          </GridSection>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <StyledPaper elevation={3}>
+              <TransactionChart/>
+            </StyledPaper>
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <StyledPaper elevation={3}>
+              <CategoryList />
+            </StyledPaper>
+          </Grid>
         </Grid>
     </AppLayout>
   );

@@ -5,6 +5,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Avatar,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -16,6 +17,7 @@ interface TopAppBar {
   onMenuClose: () => void;
   onNavigate: (path: string) => void;
   onLogout: () => void;
+  photoURL?: string;
 }
 
 const CustomAppBar: FunctionComponent<TopAppBar> = ({
@@ -25,6 +27,7 @@ const CustomAppBar: FunctionComponent<TopAppBar> = ({
   onMenuClose,
   onNavigate,
   onLogout,
+  photoURL,
 }) => {
   return (
     <AppBar position="fixed">
@@ -46,7 +49,11 @@ const CustomAppBar: FunctionComponent<TopAppBar> = ({
           color="inherit"
           sx={{ marginLeft: 'auto'}}
         >
-          <AccountCircle fontSize='large'/>
+          {photoURL ? (
+            <Avatar src={photoURL} alt="Profile" />
+          ) : (
+            <AccountCircle fontSize='large'/>
+          )}
         </IconButton>
         <Menu
           id="menu-appbar"

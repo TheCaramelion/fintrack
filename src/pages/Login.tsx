@@ -1,10 +1,11 @@
 import { FormEvent, useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
+import GoogleIcon from '@mui/icons-material/Google';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -42,6 +43,35 @@ export default function Login() {
     } catch (err: any) {
       setError(err.message);
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError(null);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        const newUserDoc = {
+          email: user.email,
+          lastLogin: new Date(),
+        };
+        await setDoc(userDocRef, newUserDoc);
+        setUserDoc(newUserDoc);
+      } else {
+        setUserDoc(userDoc.data());
+      }
+
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message)
+    }
+    
   };
 
   return (
@@ -92,6 +122,16 @@ export default function Login() {
           >
             Log In
           </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            color="primary"
+            sx={{ mt: 2 }}
+            onClick={handleGoogleLogin}
+            startIcon={<GoogleIcon />}
+            >
+            Sign in with Google
+            </Button>
         </Box>
       </Box>
     </Container>

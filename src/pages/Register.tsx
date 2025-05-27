@@ -1,8 +1,9 @@
 import { FormEvent, useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import GoogleIcon from '@mui/icons-material/Google';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -33,8 +34,33 @@ export default function Register() {
       await setDoc(doc(db, 'users', user.uid), userDoc);
 
       setSuccess('User registered successfully!');
-      console.log('User registered successfully');
+      //navigate('/dashboard');
       
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleGoogleRegister = async () => {
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDoc = {
+        email: user.email,
+        photoURL: user.photoURL,
+        createdAt: new Date(),
+      };
+
+      await setDoc(doc(db, 'users', user.uid), userDoc);
+
+      setSuccess('User registered successfully!');
+      //navigate('/dashboard');
+
     } catch (err: any) {
       setError(err.message);
     }
@@ -101,6 +127,16 @@ export default function Register() {
           >
             Register
           </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            color="primary"
+            sx={{ mt: 2 }}
+            onClick={handleGoogleRegister}
+            startIcon={<GoogleIcon />}
+          >
+            Register with Google
+        </Button>
         </Box>
       </Box>
     </Container>
