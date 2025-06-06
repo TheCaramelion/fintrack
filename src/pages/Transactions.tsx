@@ -14,17 +14,17 @@ export default function Transactions() {
   return (
       <AppLayout>
         <Grid container spacing={4}>
-          <Grid size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
             <StyledPaper elevation={3}>
               <TransactionForm/>
             </StyledPaper>
           </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
             <StyledPaper elevation={3}>
               <TransactionList/>
             </StyledPaper>
           </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
             <StyledPaper elevation={3}>
               <TransactionFilter/>
             </StyledPaper>
@@ -36,12 +36,12 @@ export default function Transactions() {
         <Grid container spacing={8}>
         </Grid>
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
             <StyledPaper elevation={3}>
               <TransactionChart/>
             </StyledPaper>
           </Grid>
-          <Grid >
+          <Grid sx={{ pt: { xs: 4, md: 0 } }}>
             <StyledPaper elevation={3}>
               <TransactionPieChart/>
             </StyledPaper>

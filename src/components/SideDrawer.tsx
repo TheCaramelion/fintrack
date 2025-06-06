@@ -11,7 +11,12 @@ interface SideDrawer {
 
 const PersistentDrawer: FunctionComponent<SideDrawer> = ({ open, onClose, onNavigate }) => {
     return (
-        <Drawer variant="temporary" anchor="left" open={open}>
+        <Drawer
+            variant="temporary"
+            anchor="left"
+            open={open}
+            onClose={onClose}
+        >
             <Box sx={drawerHeaderStyle}>
                 <Typography variant="h6">Fintrack</Typography>
             </Box>
