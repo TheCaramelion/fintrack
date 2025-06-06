@@ -4,8 +4,8 @@ export default function Navbar() {
   return (
     <nav>
       <Link to="/dashboard">Dashboard</Link>
-      <Link to="/login">Login</Link>
-      <Link to="/register">Register</Link>
+      <Link to="/login">Logeo</Link>
+      <Link to="/register">Registro</Link>
     </nav>
   );
 }

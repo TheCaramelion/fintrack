@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { TextField, Button, Box, Typography, Alert, MenuItem, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { auth, db } from '../firebase';
 import { collection, addDoc, onSnapshot } from 'firebase/firestore';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { es } from 'date-fns/locale/es';
 
 const TransactionForm = () => {
     const [categories, setCategories] = useState<any[]>([]);
@@ -11,11 +14,12 @@ const TransactionForm = () => {
     const [transactionType, setTransactionType] = useState<'income' | 'expense'>('expense');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [date, setDate] = useState<Date | null>(new Date());
 
     useEffect(() => {
         const user = auth.currentUser;
         if (!user) {
-            setError('You must be logged in to create a transaction.');
+            setError('Debes estar logueado para crear una transacción.');
             return;
         }
 
@@ -27,8 +31,8 @@ const TransactionForm = () => {
             }));
             setCategories(categoriesData);
         }, (err) => {
-            setError('Failed to fetch categories. Please try again.');
-            console.error('Error fetching categories:', err);
+            setError('No se pudieron obtener las categorías. Por favor, inténtalo de nuevo.');
+            console.error('Error al obtener las categorías:', err);
         });
 
         return () => unsubscribe();
@@ -42,17 +46,22 @@ const TransactionForm = () => {
         const user = auth.currentUser;
 
         if (!user) {
-            setError('You must be logged in to create a transaction.');
+            setError('Debes estar logueado para crear una transacción.');
             return;
         }
 
         if (!selectedCategory) {
-            setError('Please select a category.');
+            setError('Por favor selecciona una categoría.');
             return;
         }
 
         if (!amount || Number.isNaN(Number(amount)) || Number(amount) <= 0) {
-            setError('Please enter a valid amount.');
+            setError('Por favor ingresa una cantidad válida.');
+            return;
+        }
+
+        if (!date) {
+            setError('Por favor selecciona una fecha.');
             return;
         }
 
@@ -63,16 +72,16 @@ const TransactionForm = () => {
                 category: selectedCategory,
                 amount: Number(amount),
                 type: transactionType,
-                createdAt: new Date(),
+                createdAt: date,
             });
 
-            setSuccess('Transaction created successfully!');
+            setSuccess('¡Transacción creada exitosamente!');
             setSelectedCategory('');
             setAmount('');
             setTransactionType('expense');
         } catch (err: unknown) {
-            setError('Failed to create transaction. Please try again.');
-            console.error('Error creating transaction:', err);
+            setError('No se pudo crear la transacción. Por favor, inténtalo de nuevo.');
+            console.error('Error al crear la transacción:', err);
         }
     };
 
@@ -87,50 +96,60 @@ const TransactionForm = () => {
                 gap: 2,
             }}
         >
-            <Typography variant="h6">Create a New Transaction</Typography>
+            <Typography variant="h6">Crear una nueva transacción</Typography>
             {error && <Alert severity="error">{error}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    select
-                    fullWidth
-                    label="Category"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                    {categories.map((category) => (
-                        <MenuItem key={category.id} value={category.name}>
-                            {category.name}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <TextField
-                    fullWidth
-                    label="Amount"
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
-                <FormControl component="fieldset" sx={{ marginTop: 2 }}>
-                    <FormLabel component="legend">Transaction Type</FormLabel>
-                    <RadioGroup
-                        row
-                        value={transactionType}
-                        onChange={(e) => setTransactionType(e.target.value as 'income' | 'expense')}
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        select
+                        fullWidth
+                        label="Categoría"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        sx={{ mb: 2 }}
                     >
-                        <FormControlLabel value="income" control={<Radio />} label="Income" />
-                        <FormControlLabel value="expense" control={<Radio />} label="Expense" />
-                    </RadioGroup>
-                </FormControl>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{ marginTop: 2 }}
-                >
-                    Create Transaction
-                </Button>
-            </form>
+                        {categories.map((category) => (
+                            <MenuItem key={category.id} value={category.name}>
+                                {category.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        fullWidth
+                        label="Cantidad"
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <DatePicker
+                        label="Fecha"
+                        value={date}
+                        onChange={setDate}
+                        slotProps={{ textField: { fullWidth: true, sx: { mb: 2 } } }}
+                    />
+                    <FormControl component="fieldset" sx={{ marginTop: 2, mb: 2 }}>
+                        <FormLabel component="legend">Tipo de transacción</FormLabel>
+                        <RadioGroup
+                            row
+                            value={transactionType}
+                            onChange={(e) => setTransactionType(e.target.value as 'income' | 'expense')}
+                        >
+                            <FormControlLabel value="income" control={<Radio />} label="Ingreso" />
+                            <FormControlLabel value="expense" control={<Radio />} label="Gasto" />
+                        </RadioGroup>
+                    </FormControl>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        sx={{ marginTop: 2 }}
+                    >
+                        Crear transacción
+                    </Button>
+                </form>
+            </LocalizationProvider>
         </Box>
     );
 };

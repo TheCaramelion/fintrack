@@ -33,10 +33,10 @@ export default function Login() {
 
         await setDoc(userDocRef, newUserDoc);
         setUserDoc(newUserDoc);
-        console.log('New user document created:', newUserDoc);
+        console.log('Nuevo documento de usuario creado:', newUserDoc);
       } else {
         setUserDoc(userDoc.data());
-        console.log('User document already exists:', userDoc.data());
+        console.log('El documento de usuario ya existe:', userDoc.data());
       }
 
       navigate('/dashboard');
@@ -85,7 +85,7 @@ export default function Login() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Log In
+          Iniciar sesión
         </Typography>
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -94,7 +94,7 @@ export default function Login() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Correo electrónico"
             name="email"
             autoComplete="email"
             autoFocus
@@ -106,7 +106,7 @@ export default function Login() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Contraseña"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -120,7 +120,7 @@ export default function Login() {
             color="success"
             sx={{ mt: 3, mb: 2 }}
           >
-            Log In
+            Iniciar sesión
           </Button>
           <Button
             fullWidth
@@ -130,7 +130,7 @@ export default function Login() {
             onClick={handleGoogleLogin}
             startIcon={<GoogleIcon />}
             >
-            Sign in with Google
+            Iniciar sesión con Google
             </Button>
         </Box>
       </Box>

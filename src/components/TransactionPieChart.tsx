@@ -14,7 +14,7 @@ const TransactionPieChart = () => {
             const user = auth.currentUser;
 
             if (!user) {
-                setError('You must be logged in to view the chart.');
+                setError('Debes estar logueado para ver el gráfico.');
                 return;
             }
 
@@ -25,7 +25,6 @@ const TransactionPieChart = () => {
                 const incomeMap: Record<string, number> = {};
                 const expenseMap: Record<string, number> = {};
 
-                
                 for (const doc of querySnapshot.docs) {
                     const data = doc.data();
                     if (data.type === 'income') {
@@ -42,8 +41,8 @@ const TransactionPieChart = () => {
                     Object.entries(expenseMap).map(([label, value]) => ({ label, value }))
                 );
             } catch (err: unknown) {
-                setError('Failed to fetch transactions. Please try again.');
-                console.error('Error fetching transactions:', err);
+                setError('No se pudieron obtener las transacciones. Por favor, inténtalo de nuevo.');
+                console.error('Error al obtener las transacciones:', err);
             }
         };
 
@@ -53,13 +52,13 @@ const TransactionPieChart = () => {
     return (
         <Box sx={{ maxWidth: 800, margin: '0 auto', padding: 2 }}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                Income and Expense Breakdown
+                Ingresos y Gastos por Categoría
             </Typography>
             {error && <Alert severity="error">{error}</Alert>}
             <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 4 }}>
                 <Box>
                     <Typography variant="subtitle1" sx={{ textAlign: 'center', marginBottom: 1 }}>
-                        Income
+                        Ingresos
                     </Typography>
                     <PieChart
                         series={[
@@ -72,7 +71,7 @@ const TransactionPieChart = () => {
                 </Box>
                 <Box>
                     <Typography variant="subtitle1" sx={{ textAlign: 'center', marginBottom: 1 }}>
-                        Expenses
+                        Gastos
                     </Typography>
                     <PieChart
                         series={[

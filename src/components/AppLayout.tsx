@@ -1,4 +1,4 @@
-import { useState, useEffect, type FunctionComponent, type ReactNode } from 'react';
+import { useState, useEffect, type FunctionComponent, type ReactNode, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { auth } from '../firebase';
@@ -31,7 +31,7 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
     setDrawerOpen(false);
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -44,7 +44,7 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
       signOut(auth);
       navigate('/');
     } catch (error) {
-      console.error('Error singing out: ', error)
+      console.error('Error al cerrar sesión: ', error)
     }
   };
 

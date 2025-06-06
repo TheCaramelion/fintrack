@@ -42,7 +42,7 @@ const TransactionList = () => {
             const user = auth.currentUser;
 
             if (!user) {
-                setError('You must be logged in to view transactions.');
+                setError('Debes estar logueado para ver las transacciones.');
                 return;
             }
 
@@ -55,14 +55,14 @@ const TransactionList = () => {
                     }));
                     setTransactions(transactionsData);
                 }, (err) => {
-                    setError('Failed to fetch transactions. Please try again.');
-                    console.error('Error fetching transactions:', err);
+                    setError('Error al obtener las transacciones. Por favor, inténtalo de nuevo.');
+                    console.error('Error al obtener las transacciones:', err);
                 });
 
                 return () => unsubscribe();
             } catch (err: unknown) {
-                setError('Failed to fetch transactions. Please try again.');
-                console.error('Error fetching transactions:', err);
+                setError('Error al obtener las transacciones. Por favor, inténtalo de nuevo.');
+                console.error('Error al obtener las transacciones:', err);
             }
         };
 
@@ -89,7 +89,7 @@ const TransactionList = () => {
 
         const user = auth.currentUser;
         if (!user) {
-            setError('You must be logged in to delete transactions.');
+            setError('Debes estar logueado para borrar transacciones.');
             return;
         }
 
@@ -101,8 +101,8 @@ const TransactionList = () => {
             setTransactionToDelete(null);
             setDeleteDialogOpen(false);
         } catch (err: unknown) {
-            setError('Failed to delete transaction. Please try again.');
-            console.error('Error deleting transaction:', err);
+            setError('Error al borrar la transacción. Por favor, inténtalo de nuevo.');
+            console.error('Error al borrar la transacción:', err);
         }
     };
 
@@ -121,7 +121,7 @@ const TransactionList = () => {
         if (!transactionToEdit) return;
         const user = auth.currentUser;
         if (!user) {
-            setError('You must be logged in to edit transactions.');
+            setError('Debes estar logueado para editar transacciones.');
             return;
         }
         try {
@@ -141,8 +141,8 @@ const TransactionList = () => {
             setEditDialogOpen(false);
             setTransactionToEdit(null);
         } catch (err: unknown) {
-            setError('Failed to update transaction. Please try again.');
-            console.error('Error updating transaction:', err);
+            setError('Error al actualizar la transacción. Por favor, inténtalo de nuevo.');
+            console.error('Error al actualizar la transacción:', err);
         }
     };
 
@@ -167,10 +167,10 @@ const TransactionList = () => {
                 gap: 2,
             }}
         >
-            <Typography variant="h6">Your Transactions</Typography>
+            <Typography variant="h6">Transacciones</Typography>
             {error && <Alert severity="error">{error}</Alert>}
             {transactions.length > 0 ? (
-                <List>
+                <List sx={{ overflowY: 'auto' }}>
                     {transactions.map((transaction) => (
                         <ListItem
                             key={transaction.id}
@@ -178,14 +178,14 @@ const TransactionList = () => {
                                 <>
                                     <IconButton
                                         edge="end"
-                                        aria-label="edit"
+                                        aria-label="editar"
                                         onClick={() => handleEdit(transaction.id)}
                                     >
                                         <EditIcon />
                                     </IconButton>
                                     <IconButton
                                         edge="end"
-                                        aria-label="delete"
+                                        aria-label="borrar"
                                         onClick={() => openDeleteDialog(transaction.id)}
                                     >
                                         <DeleteIcon />
@@ -198,7 +198,7 @@ const TransactionList = () => {
                                 secondary={new Date(transaction.createdAt.seconds * 1000).toLocaleDateString()}
                             />
                             <Chip
-                                label={transaction.type === 'income' ? 'Income' : 'Expense'}
+                                label={transaction.type === 'income' ? 'Ingreso' : 'Gasto'}
                                 color={transaction.type === 'income' ? 'success' : 'error'}
                                 sx={{ marginLeft: 2, marginRight: 2 }}
                             />
@@ -206,7 +206,7 @@ const TransactionList = () => {
                     ))}
                 </List>
             ) : (
-                <Typography>No transactions found.</Typography>
+                <Typography>No se encuentran transacciones.</Typography>
             )}
 
             <Dialog
@@ -215,18 +215,18 @@ const TransactionList = () => {
                 aria-labelledby="delete-dialog-title"
                 aria-describedby="delete-dialog-description"
             >
-                <DialogTitle id="delete-dialog-title">Delete Transaction</DialogTitle>
+                <DialogTitle id="delete-dialog-title">Borrar Transacción</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="delete-dialog-description">
-                        Are you sure you want to delete this transaction? This action cannot be undone.
+                        ¿Estás seguro de que quieres borrar esta transacción? Esta acción no se puede deshacer.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={closeDeleteDialog} color="primary">
-                        Cancel
+                        Cancelar
                     </Button>
                     <Button onClick={handleDelete} color="error" autoFocus>
-                        Delete
+                        Borrar
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -236,10 +236,10 @@ const TransactionList = () => {
                 onClose={() => setEditDialogOpen(false)}
                 aria-labelledby="edit-dialog-title"
             >
-                <DialogTitle id="edit-dialog-title">Edit Transaction</DialogTitle>
+                <DialogTitle id="edit-dialog-title">Editar Transacción</DialogTitle>
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                     <TextField
-                        label="Amount"
+                        label="Cantidad"
                         type="number"
                         value={editAmount}
                         onChange={e => setEditAmount(e.target.value)}
@@ -247,7 +247,7 @@ const TransactionList = () => {
                     />
                     <TextField
                         select
-                        label="Category"
+                        label="Categoría"
                         value={editCategory}
                         onChange={e => setEditCategory(e.target.value)}
                         fullWidth
@@ -257,15 +257,15 @@ const TransactionList = () => {
                         ))}
                     </TextField>
                     <Stack direction="row" spacing={2} alignItems="center">
-                        <Typography>Type:</Typography>
+                        <Typography>Tipo:</Typography>
                         <Chip
-                            label="Income"
+                            label="Ingreso"
                             color={editType === 'income' ? 'success' : 'default'}
                             clickable
                             onClick={() => setEditType('income')}
                         />
                         <Chip
-                            label="Expense"
+                            label="Gasto"
                             color={editType === 'expense' ? 'error' : 'default'}
                             clickable
                             onClick={() => setEditType('expense')}
@@ -274,10 +274,10 @@ const TransactionList = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setEditDialogOpen(false)} color="primary">
-                        Cancel
+                        Cancelar
                     </Button>
                     <Button onClick={handleEditSave} color="success" variant="contained">
-                        Save
+                        Guardar
                     </Button>
                 </DialogActions>
             </Dialog>

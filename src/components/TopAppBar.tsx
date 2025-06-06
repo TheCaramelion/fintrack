@@ -35,14 +35,14 @@ const CustomAppBar: FunctionComponent<TopAppBar> = ({
         <IconButton
           edge="start"
           color="inherit"
-          aria-label="menu"
+          aria-label="menú"
           onClick={onMenuClick}
         >
           <MenuIcon />
         </IconButton>
         <IconButton
           size="large"
-          aria-label="account of current user"
+          aria-label="cuenta del usuario actual"
           aria-controls="menu-appbar"
           aria-haspopup="true"
           onClick={onMenuOpen}
@@ -50,7 +50,7 @@ const CustomAppBar: FunctionComponent<TopAppBar> = ({
           sx={{ marginLeft: 'auto'}}
         >
           {photoURL ? (
-            <Avatar src={photoURL} alt="Profile" />
+            <Avatar src={photoURL} alt="Perfil" />
           ) : (
             <AccountCircle fontSize='large'/>
           )}
@@ -70,9 +70,9 @@ const CustomAppBar: FunctionComponent<TopAppBar> = ({
           open={Boolean(anchorEl)}
           onClose={onMenuClose}
         >
-          <MenuItem onClick={() => onNavigate('/profile')}>Profile</MenuItem>
-          <MenuItem onClick={() => onNavigate('/settings')}>Settings</MenuItem>
-          <MenuItem onClick={onLogout}>Log Out</MenuItem>
+          <MenuItem onClick={() => onNavigate('/profile')}>Perfil</MenuItem>
+          {/* <MenuItem onClick={() => onNavigate('/settings')}>Ajustes</MenuItem> */}
+          <MenuItem onClick={onLogout}>Cerrar sesión</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

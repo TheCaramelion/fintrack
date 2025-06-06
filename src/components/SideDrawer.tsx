@@ -18,13 +18,13 @@ const PersistentDrawer: FunctionComponent<SideDrawer> = ({ open, onClose, onNavi
             <Box sx={drawerBoxStyle} role="presentation">
                 <List>
                     <ListItem component="button" sx={drawerListItemStyle} onClick={() => onNavigate('/dashboard')}>
-                        <ListItemText primary="Dashboard" />
+                        <ListItemText primary="Panel" />
                     </ListItem>
                     <ListItem component="button" sx={drawerListItemStyle} onClick={() => onNavigate('/transactions')}>
-                        <ListItemText primary="Transactions" />
+                        <ListItemText primary="Transacciones" />
                     </ListItem>
                     <ListItem component="button" sx={drawerListItemStyle} onClick={() => onNavigate('/categories')}>
-                        <ListItemText primary="Categories" />
+                        <ListItemText primary="Categorías" />
                     </ListItem>
                     <ListItem>
                         <IconButton edge="start" color="inherit" onClick={onClose}>

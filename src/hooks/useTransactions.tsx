@@ -19,7 +19,7 @@ const useTransactions = () => {
             const user = auth.currentUser;
 
             if (!user) {
-                setError('You must be logged in to view transactions.');
+                setError('Debes estar logueado para ver las transacciones.');
                 return;
             }
 
@@ -34,8 +34,8 @@ const useTransactions = () => {
 
                 setTransactions(transactionsData);
             } catch (err: unknown) {
-                setError('Failed to fetch transactions. Please try again.');
-                console.error('Error fetching transactions:', err);
+                setError('No se pudieron obtener las transacciones. Por favor, inténtalo de nuevo.');
+                console.error('Error al obtener las transacciones:', err);
             }
         };
 

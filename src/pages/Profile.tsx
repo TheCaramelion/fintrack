@@ -9,7 +9,7 @@ export default function Profile() {
 
     const createdAt = user?.metadata?.creationTime
         ? new Date(user.metadata.creationTime).toLocaleDateString('es-ES')
-        : "Unknown";
+        : "Desconocido";
 
     return (
         <AppLayout>
@@ -20,21 +20,21 @@ export default function Profile() {
                         alt={user?.email}
                         sx={{ width: 80, height: 80, mx: 'auto', mb: 2 }}
                     />
-                    <Typography variant="h6">{user?.displayName || "No Name"}</Typography>
+                    <Typography variant="h6">{user?.displayName || "Sin nombre"}</Typography>
                     <Typography variant="body1" color="text.secondary">{user?.email}</Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        Account created: {createdAt}
+                        Cuenta creada: {createdAt}
                     </Typography>
                     <Divider sx={{ my: 3 }} />
                     <Stack spacing={2}>
                         <Button variant="outlined" color="primary" fullWidth>
-                            Change Password
+                            Cambiar contraseña
                         </Button>
                         <Button variant="outlined" color="primary" fullWidth>
-                            Update Profile
+                            Actualizar perfil
                         </Button>
                         <Button variant="contained" color="error" fullWidth onClick={() => auth.signOut()}>
-                            Sign Out
+                            Cerrar sesión
                         </Button>
                     </Stack>
                 </Paper>

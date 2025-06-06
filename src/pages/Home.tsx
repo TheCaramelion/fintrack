@@ -76,11 +76,11 @@ export default function Home() {
       <Grid container sx={{ minHeight: '90vh' }}>
         <Grid size={{ xs: 12, md: 5}} sx={{ bgcolor: '#0a2239', color: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 6 }}>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
-            Welcome Back to FinTrack
+            Bienvenido a FinTrack
           </Typography>
           <Box sx={{ width: '100%', height: 6, bgcolor: '#00e676', borderRadius: 3, mb: 3 }} />
           <Typography variant="h6" sx={{ opacity: 0.8 }}>
-            Sign in to continue to your account.
+            Inicia sesión para continuar con tu cuenta.
           </Typography>
         </Grid>
 
@@ -94,13 +94,13 @@ export default function Home() {
               sx={{ mb: 2, textTransform: 'none' }}
               onClick={handleGoogleLogin}
             >
-              Continue with Google
+              Continuar con Google
             </Button>
-            <Divider sx={{ my: 3 }}>OR</Divider>
+            <Divider sx={{ my: 3 }}>O</Divider>
             <form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
-                label="Email address"
+                label="Correo electrónico"
                 variant="outlined"
                 sx={{ mb: 2 }}
                 value={email}
@@ -110,7 +110,7 @@ export default function Home() {
               />
               <TextField
                 fullWidth
-                label="Password"
+                label="Contraseña"
                 type="password"
                 autoComplete="current-password"
                 value={password}
@@ -125,13 +125,13 @@ export default function Home() {
                 color="success"
                 sx={{ mb: 2, textTransform: 'none', fontWeight: 'bold', fontSize: 18, marginTop: 1 }}
               >
-                Sign In
+                Iniciar sesión
               </Button>
             </form>
             <Typography align="center" sx={{ mt: 2 }}>
-              Not a member yet?{' '}
+              ¿Aún no tienes cuenta?{' '}
               <MuiLink component={Link} to="/register" underline="hover" color="primary" fontWeight="bold">
-                Sign Up.
+                Regístrate.
               </MuiLink>
             </Typography>
           </Box>

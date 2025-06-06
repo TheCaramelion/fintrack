@@ -28,21 +28,24 @@ const TransactionFilter = () => {
         const user = auth.currentUser;
 
         if (!user) {
-            setError('You must be logged in to filter transactions.');
+            setError('Debes de estar logueado para filtrar transacciones.');
             return;
         }
 
         if (!startDate || !endDate) {
-            setError('Please select both start and end dates.');
+            setError('Seleccione ambas fechas.');
             return;
         }
+
+        const endOfDay = new Date(endDate);
+        endOfDay.setHours(23, 59, 59, 999);
 
         try {
             const transactionsRef = collection(db, 'users', user.uid, 'transactions');
             const q = query(
                 transactionsRef,
                 where('createdAt', '>=', Timestamp.fromDate(startDate)),
-                where('createdAt', '<=', Timestamp.fromDate(endDate))
+                where('createdAt', '<=', Timestamp.fromDate(endOfDay))
             );
 
             const querySnapshot = await getDocs(q);
@@ -60,8 +63,8 @@ const TransactionFilter = () => {
 
             setTransactions(transactionsData);
         } catch (err: unknown) {
-            setError('Failed to fetch transactions. Please try again.');
-            console.error('Error fetching transactions:', err);
+            setError('No se pudieron obtener las transacciones. Por favor, inténtalo de nuevo.');
+            console.error('Error al obtener las transacciones:', err);
         }
     };
 
@@ -77,11 +80,11 @@ const TransactionFilter = () => {
                     gap: 2,
                 }}
             >
-                <Typography variant="h6">Filter Transactions by Date</Typography>
+                <Typography variant="h6">Filtrar transacciones por fecha</Typography>
                 {error && <Alert severity="error">{error}</Alert>}
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <DatePicker
-                        label="Start Date"
+                        label="Fecha de inicio"
                         value={startDate}
                         onChange={(newValue) => setStartDate(newValue)}
                         enableAccessibleFieldDOMStructure={false}
@@ -89,7 +92,7 @@ const TransactionFilter = () => {
                         slotProps={{ textField: { fullWidth: true } }}
                     />
                     <DatePicker
-                        label="End Date"
+                        label="Fecha de fin"
                         value={endDate}
                         onChange={(newValue) => setEndDate(newValue)}
                         enableAccessibleFieldDOMStructure={false}
@@ -103,10 +106,10 @@ const TransactionFilter = () => {
                     onClick={handleFilter}
                     sx={{ marginTop: 2 }}
                 >
-                    Filter Transactions
+                    Filtrar transacciones
                 </Button>
                 {transactions.length > 0 ? (
-                    <List>
+                    <List sx={{ overflowY: 'auto', maxHeight: 300 }}>
                         {transactions.map((transaction) => (
                             <ListItem key={transaction.id}>
                                 <ListItemText
@@ -117,7 +120,7 @@ const TransactionFilter = () => {
                                     )}
                                 />
                                 <Chip
-                                    label={transaction.type === 'income' ? 'Income' : 'Expense'}
+                                    label={transaction.type === 'income' ? 'Ingreso' : 'Gasto'}
                                     color={transaction.type === 'income' ? 'success' : 'error'}
                                     sx={{ marginLeft: 2 }}
                                 />
@@ -125,7 +128,7 @@ const TransactionFilter = () => {
                         ))}
                     </List>
                 ) : (
-                    <Typography>No transactions found for the selected date range.</Typography>
+                    <Typography>No se han encontrado transacciones entre las fechas indicadas.</Typography>
                 )}
             </Box>
         </LocalizationProvider>

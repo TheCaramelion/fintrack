@@ -18,7 +18,7 @@ export default function Register() {
     setSuccess(null);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Las contraseñas no coinciden');
       return;
     }
 
@@ -33,7 +33,7 @@ export default function Register() {
 
       await setDoc(doc(db, 'users', user.uid), userDoc);
 
-      setSuccess('User registered successfully!');
+      setSuccess('¡Usuario registrado exitosamente!');
       //navigate('/dashboard');
       
     } catch (err: any) {
@@ -58,7 +58,7 @@ export default function Register() {
 
       await setDoc(doc(db, 'users', user.uid), userDoc);
 
-      setSuccess('User registered successfully!');
+      setSuccess('¡Usuario registrado exitosamente!');
       //navigate('/dashboard');
 
     } catch (err: any) {
@@ -77,7 +77,7 @@ export default function Register() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Register
+          Registrarse
         </Typography>
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
@@ -87,7 +87,7 @@ export default function Register() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Correo electrónico"
             name="email"
             autoComplete="email"
             autoFocus
@@ -99,7 +99,7 @@ export default function Register() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Contraseña"
             type="password"
             id="password"
             autoComplete="new-password"
@@ -111,7 +111,7 @@ export default function Register() {
             required
             fullWidth
             name="confirmPassword"
-            label="Confirm Password"
+            label="Confirmar contraseña"
             type="password"
             id="confirmPassword"
             autoComplete="new-password"
@@ -125,7 +125,7 @@ export default function Register() {
             color="success"
             sx={{ mt: 3, mb: 2 }}
           >
-            Register
+            Registrarse
           </Button>
           <Button
             fullWidth
@@ -135,8 +135,8 @@ export default function Register() {
             onClick={handleGoogleRegister}
             startIcon={<GoogleIcon />}
           >
-            Register with Google
-        </Button>
+            Registrarse con Google
+          </Button>
         </Box>
       </Box>
     </Container>

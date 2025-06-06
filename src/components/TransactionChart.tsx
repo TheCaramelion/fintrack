@@ -12,7 +12,7 @@ const TransactionChart = () => {
     useEffect(() => {
         const user = auth.currentUser;
         if (!user) {
-            setError('You must be logged in to view the chart.');
+            setError('Debes estar logueado para ver el gráfico.');
             return;
         }
 
@@ -36,8 +36,8 @@ const TransactionChart = () => {
                 setIncomes(totalIncomes);
             },
             (err) => {
-                setError('Failed to fetch transactions. Please try again.');
-                console.error('Error fetching transactions:', err);
+                setError('Error al obtener las transacciones. Por favor, inténtalo de nuevo.');
+                console.error('Error al obtener las transacciones:', err);
             }
         );
 
@@ -45,14 +45,14 @@ const TransactionChart = () => {
     }, []);
 
     const data = [
-        { label: 'Expenses', value: expenses },
-        { label: 'Incomes', value: incomes },
+        { label: 'Gastos', value: expenses },
+        { label: 'Ingresos', value: incomes },
     ];
 
     return (
         <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 2 }}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                Expenses vs Incomes
+                Gastos vs Ingresos
             </Typography>
             {error && <Alert severity="error">{error}</Alert>}
             <BarChart
