@@ -16,8 +16,8 @@ export default function Profile() {
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
                 <Paper sx={{ p: 4, minWidth: 320, textAlign: 'center' }}>
                     <Avatar
-                        src={user?.photoURL}
-                        alt={user?.email}
+                        src={user?.photoURL ?? undefined}
+                        alt={user?.email ?? undefined}
                         sx={{ width: 80, height: 80, mx: 'auto', mb: 2 }}
                     />
                     <Typography variant="h6">{user?.displayName || "Sin nombre"}</Typography>
