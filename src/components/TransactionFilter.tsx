@@ -113,7 +113,7 @@ const TransactionFilter = () => {
                         {transactions.map((transaction) => (
                             <ListItem key={transaction.id}>
                                 <ListItemText
-                                    primary={`${transaction.category} - $${transaction.amount}`}
+                                    primary={`${transaction.category} - ${transaction.amount}€`}
                                     secondary={format(
                                         new Date(transaction.createdAt.seconds * 1000),
                                         'dd/MM/yyyy'

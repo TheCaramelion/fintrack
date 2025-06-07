@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { auth, db } from '../firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import { Box, Typography, Alert } from '@mui/material';
 
 const TransactionChart = () => {
@@ -10,38 +11,46 @@ const TransactionChart = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const user = auth.currentUser;
-        if (!user) {
-            setError('Debes estar logueado para ver el gráfico.');
-            return;
-        }
+        let unsubscribeTransactions: (() => void) | null = null;
 
-        const transactionsRef = collection(db, 'users', user.uid, 'transactions');
-        const unsubscribe = onSnapshot(
-            transactionsRef,
-            (querySnapshot) => {
-                let totalExpenses = 0;
-                let totalIncomes = 0;
-
-                for (const doc of querySnapshot.docs) {
-                    const data = doc.data();
-                    if (data.type === 'expense') {
-                        totalExpenses += Number(data.amount);
-                    } else if (data.type === 'income') {
-                        totalIncomes += Number(data.amount);
-                    }
-                }
-
-                setExpenses(totalExpenses);
-                setIncomes(totalIncomes);
-            },
-            (err) => {
-                setError('Error al obtener las transacciones. Por favor, inténtalo de nuevo.');
-                console.error('Error al obtener las transacciones:', err);
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                setError('Debes estar logueado para ver el gráfico.');
+                setExpenses(0);
+                setIncomes(0);
+                return;
             }
-        );
 
-        return () => unsubscribe();
+            const transactionsRef = collection(db, 'users', user.uid, 'transactions');
+            unsubscribeTransactions = onSnapshot(
+                transactionsRef,
+                (querySnapshot) => {
+                    let totalExpenses = 0;
+                    let totalIncomes = 0;
+
+                    for (const doc of querySnapshot.docs) {
+                        const data = doc.data();
+                        if (data.type === 'expense') {
+                            totalExpenses += Number(data.amount);
+                        } else if (data.type === 'income') {
+                            totalIncomes += Number(data.amount);
+                        }
+                    }
+
+                    setExpenses(totalExpenses);
+                    setIncomes(totalIncomes);
+                },
+                (err) => {
+                    setError('Error al obtener las transacciones. Por favor, inténtalo de nuevo.');
+                    console.error('Error al obtener las transacciones:', err);
+                }
+            );
+        });
+
+        return () => {
+            if (unsubscribeTransactions) unsubscribeTransactions();
+            unsubscribeAuth();
+        };
     }, []);
 
     const data = [

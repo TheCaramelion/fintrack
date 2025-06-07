@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, doc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import {
     List,
     ListItem,
@@ -26,31 +27,36 @@ const CategoryList = () => {
     const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            const user = auth.currentUser;
+        let unsubscribeCategories: (() => void) | null = null;
 
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (!user) {
                 setError('Debes estar logueado para ver las categorías.');
+                setCategories([]);
                 return;
             }
 
-            try {
-                const categoriesRef = collection(db, 'users', user.uid, 'categories');
-                const querySnapshot = await getDocs(categoriesRef);
+            const categoriesRef = collection(db, 'users', user.uid, 'categories');
+            unsubscribeCategories = onSnapshot(
+                categoriesRef,
+                (querySnapshot) => {
+                    const categoriesData = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setCategories(categoriesData);
+                },
+                (err) => {
+                    setError('Error al obtener las categorías. Por favor, inténtalo de nuevo.');
+                    console.error('Error al obtener las categorías:', err);
+                }
+            );
+        });
 
-                const categoriesData = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-
-                setCategories(categoriesData);
-            } catch (err: any) {
-                setError('Error al obtener las categorías. Por favor, inténtalo de nuevo.');
-                console.error('Error al obtener las categorías:', err);
-            }
+        return () => {
+            if (unsubscribeCategories) unsubscribeCategories();
+            unsubscribeAuth();
         };
-
-        fetchCategories();
     }, []);
 
     const handleDelete = async () => {

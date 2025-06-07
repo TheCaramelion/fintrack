@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { collection, getDocs, doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import {
     List,
     ListItem,
@@ -38,35 +39,33 @@ const TransactionList = () => {
     const [categories, setCategories] = useState<string[]>([]);
 
     useEffect(() => {
-        const fetchTransactions = async () => {
-            const user = auth.currentUser;
-
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (!user) {
                 setError('Debes estar logueado para ver las transacciones.');
+                setTransactions([]);
                 return;
             }
 
-            try {
-                const transactionsRef = collection(db, 'users', user.uid, 'transactions');
-                const unsubscribe = onSnapshot(transactionsRef, (querySnapshot) => {
+            const transactionsRef = collection(db, 'users', user.uid, 'transactions');
+            const unsubscribeTransactions = onSnapshot(
+                transactionsRef,
+                (querySnapshot) => {
                     const transactionsData = querySnapshot.docs.map((doc) => ({
                         id: doc.id,
                         ...doc.data(),
                     }));
                     setTransactions(transactionsData);
-                }, (err) => {
+                },
+                (err) => {
                     setError('Error al obtener las transacciones. Por favor, inténtalo de nuevo.');
                     console.error('Error al obtener las transacciones:', err);
-                });
+                }
+            );
 
-                return () => unsubscribe();
-            } catch (err: unknown) {
-                setError('Error al obtener las transacciones. Por favor, inténtalo de nuevo.');
-                console.error('Error al obtener las transacciones:', err);
-            }
-        };
+            return () => unsubscribeTransactions();
+        });
 
-        fetchTransactions();
+        return () => unsubscribeAuth();
     }, []);
 
     useEffect(() => {
@@ -170,7 +169,12 @@ const TransactionList = () => {
             <Typography variant="h6">Transacciones</Typography>
             {error && <Alert severity="error">{error}</Alert>}
             {transactions.length > 0 ? (
-                <List sx={{ overflowY: 'auto' }}>
+                <List
+                    sx={{
+                        maxHeight: 400,
+                        overflowY: 'auto',
+                    }}
+                >
                     {transactions.map((transaction) => (
                         <ListItem
                             key={transaction.id}

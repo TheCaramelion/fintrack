@@ -6,6 +6,7 @@ import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { es } from 'date-fns/locale/es';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const TransactionForm = () => {
     const [categories, setCategories] = useState<any[]>([]);
@@ -17,25 +18,32 @@ const TransactionForm = () => {
     const [date, setDate] = useState<Date | null>(new Date());
 
     useEffect(() => {
-        const user = auth.currentUser;
-        if (!user) {
-            setError('Debes estar logueado para crear una transacción.');
-            return;
-        }
+        let unsubscribeCategories: (() => void) | null = null;
 
-        const categoriesRef = collection(db, 'users', user.uid, 'categories');
-        const unsubscribe = onSnapshot(categoriesRef, (querySnapshot) => {
-            const categoriesData = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setCategories(categoriesData);
-        }, (err) => {
-            setError('No se pudieron obtener las categorías. Por favor, inténtalo de nuevo.');
-            console.error('Error al obtener las categorías:', err);
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                setError('Debes estar logueado para crear una transacción.');
+                setCategories([]);
+                return;
+            }
+
+            const categoriesRef = collection(db, 'users', user.uid, 'categories');
+            unsubscribeCategories = onSnapshot(categoriesRef, (querySnapshot) => {
+                const categoriesData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setCategories(categoriesData);
+            }, (err) => {
+                setError('No se pudieron obtener las categorías. Por favor, inténtalo de nuevo.');
+                console.error('Error al obtener las categorías:', err);
+            });
         });
 
-        return () => unsubscribe();
+        return () => {
+            if (unsubscribeCategories) unsubscribeCategories();
+            unsubscribeAuth();
+        };
     }, []);
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -69,7 +77,7 @@ const TransactionForm = () => {
             const transactionsRef = collection(db, 'users', user.uid, 'transactions');
 
             await addDoc(transactionsRef, {
-                category: selectedCategory,
+                category: selectedCategory || 'No Especificado',
                 amount: Number(amount),
                 type: transactionType,
                 createdAt: date,

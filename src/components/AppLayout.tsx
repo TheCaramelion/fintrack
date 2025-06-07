@@ -1,9 +1,9 @@
-import { useState, useEffect, type FunctionComponent, type ReactNode, MouseEvent } from 'react';
+import { useState, useEffect, type FunctionComponent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { auth } from '../firebase';
-import TopAppBar from './TopAppBar';
 import SideDrawer from './SideDrawer';
+import TopAppBar from './TopAppBar';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -12,7 +12,6 @@ interface AppLayoutProps {
 const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -31,14 +30,6 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
     setDrawerOpen(false);
   };
 
-  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleLogout = () => {
     try {
       signOut(auth);
@@ -51,10 +42,9 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   return (
     <>
       <TopAppBar
-        onMenuClick={() => setDrawerOpen(true)}
-        anchorEl={anchorEl}
-        onMenuOpen={handleMenuOpen}
-        onMenuClose={handleMenuClose}
+        drawerOpen={drawerOpen}
+        onDrawerOpen={() => setDrawerOpen(true)}
+        onDrawerClose={() => setDrawerOpen(false)}
         onNavigate={handleNavigation}
         onLogout={handleLogout}
         photoURL={user?.photoURL ?? undefined}
@@ -63,6 +53,8 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onNavigate={handleNavigation}
+        onLogout={handleLogout}
+        photoURL={user?.photoURL ?? undefined}
       />
       <main style={{ marginTop: 64, transition: 'margin 0.3s' }}>
         {children}

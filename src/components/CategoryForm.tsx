@@ -52,7 +52,7 @@ const CategoryForm = () => {
                 gap: 2,
             }}
         >
-            <Typography variant="h6">Crear una nueva categoría.</Typography>
+            <Typography variant="h6">Crear una nueva categoría</Typography>
             {error && <Alert severity="error">{error}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
             <form onSubmit={handleSubmit}>

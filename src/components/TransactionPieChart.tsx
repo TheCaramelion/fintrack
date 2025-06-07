@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { auth, db } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import { Box, Typography, Alert } from '@mui/material';
 
 const TransactionPieChart = () => {
@@ -10,43 +11,50 @@ const TransactionPieChart = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchTransactions = async () => {
-            const user = auth.currentUser;
+        let unsubscribeTransactions: (() => void) | null = null;
 
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (!user) {
                 setError('Debes estar logueado para ver el gráfico.');
+                setIncomeData([]);
+                setExpenseData([]);
                 return;
             }
 
-            try {
-                const transactionsRef = collection(db, 'users', user.uid, 'transactions');
-                const querySnapshot = await getDocs(transactionsRef);
+            const transactionsRef = collection(db, 'users', user.uid, 'transactions');
+            unsubscribeTransactions = onSnapshot(
+                transactionsRef,
+                (querySnapshot) => {
+                    const incomeMap: Record<string, number> = {};
+                    const expenseMap: Record<string, number> = {};
 
-                const incomeMap: Record<string, number> = {};
-                const expenseMap: Record<string, number> = {};
-
-                for (const doc of querySnapshot.docs) {
-                    const data = doc.data();
-                    if (data.type === 'income') {
-                        incomeMap[data.category] = (incomeMap[data.category] || 0) + data.amount;
-                    } else if (data.type === 'expense') {
-                        expenseMap[data.category] = (expenseMap[data.category] || 0) + data.amount;
+                    for (const doc of querySnapshot.docs) {
+                        const data = doc.data();
+                        if (data.type === 'income') {
+                            incomeMap[data.category] = (incomeMap[data.category] || 0) + data.amount;
+                        } else if (data.type === 'expense') {
+                            expenseMap[data.category] = (expenseMap[data.category] || 0) + data.amount;
+                        }
                     }
+
+                    setIncomeData(
+                        Object.entries(incomeMap).map(([label, value]) => ({ label, value }))
+                    );
+                    setExpenseData(
+                        Object.entries(expenseMap).map(([label, value]) => ({ label, value }))
+                    );
+                },
+                (err) => {
+                    setError('No se pudieron obtener las transacciones. Por favor, inténtalo de nuevo.');
+                    console.error('Error al obtener las transacciones:', err);
                 }
+            );
+        });
 
-                setIncomeData(
-                    Object.entries(incomeMap).map(([label, value]) => ({ label, value }))
-                );
-                setExpenseData(
-                    Object.entries(expenseMap).map(([label, value]) => ({ label, value }))
-                );
-            } catch (err: unknown) {
-                setError('No se pudieron obtener las transacciones. Por favor, inténtalo de nuevo.');
-                console.error('Error al obtener las transacciones:', err);
-            }
+        return () => {
+            if (unsubscribeTransactions) unsubscribeTransactions();
+            unsubscribeAuth();
         };
-
-        fetchTransactions();
     }, []);
 
     return (

@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, browserLocalPersistence, setPersistence } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +19,8 @@ export default function Login() {
     setError(null);
 
     try {
+      await setPersistence(auth, browserLocalPersistence);
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
@@ -49,6 +51,8 @@ export default function Login() {
     setError(null);
 
     try {
+      await setPersistence(auth, browserLocalPersistence);
+
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
