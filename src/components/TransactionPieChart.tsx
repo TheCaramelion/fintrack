@@ -63,17 +63,8 @@ const TransactionPieChart = () => {
                 Ingresos y Gastos por Categoría
             </Typography>
             {error && <Alert severity="error">{error}</Alert>}
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-around',
-                    flexWrap: 'wrap',
-                    gap: 4,
-                    flexDirection: { xs: 'column', md: 'row' },
-                    alignItems: 'center',
-                }}
-            >
-                <Box sx={{ width: 320, minWidth: 240, flex: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 4 }}>
+                <Box>
                     <Typography variant="subtitle1" sx={{ textAlign: 'center', marginBottom: 1 }}>
                         Ingresos
                     </Typography>
@@ -86,7 +77,7 @@ const TransactionPieChart = () => {
                         height={300}
                     />
                 </Box>
-                <Box sx={{ width: 320, minWidth: 240, flex: 1 }}>
+                <Box>
                     <Typography variant="subtitle1" sx={{ textAlign: 'center', marginBottom: 1 }}>
                         Gastos
                     </Typography>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
-import { collection, doc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, deleteDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import {
     List,
@@ -102,7 +102,7 @@ const CategoryList = () => {
         }
         try {
             const categoryDocRef = doc(db, 'users', user.uid, 'categories', categoryToEdit.id);
-            await categoryDocRef.update({ name: editName });
+            await updateDoc(categoryDocRef, { name: editName });
             setCategories((prev) =>
                 prev.map((cat) =>
                     cat.id === categoryToEdit.id ? { ...cat, name: editName } : cat
@@ -124,11 +124,6 @@ const CategoryList = () => {
     const closeDeleteDialog = () => {
         setCategoryToDelete(null);
         setDeleteDialogOpen(false);
-    };
-
-    const closeEditDialog = () => {
-        setEditDialogOpen(false);
-        setCategoryToEdit(null);
     };
 
     return (
