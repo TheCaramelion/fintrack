@@ -1,6 +1,5 @@
 import type { FunctionComponent } from 'react';
-import { Drawer, Box, List, ListItem, IconButton, ListItemButton, ListItemText, Typography, Avatar, Divider } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Drawer, Box, List, IconButton, ListItemButton, ListItemText, Typography, Avatar, Divider } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import CategoryIcon from '@mui/icons-material/Category';
@@ -39,12 +38,26 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     anchor="left"
     open={open}
     onClose={onClose}
-    PaperProps={{
-      sx: { width: drawerWidth },
-    }}
+    sx={{ width: drawerWidth }}
   >
-    <Box sx={drawerHeaderStyle}>
-      <Typography variant="h6">Fintrack</Typography>
+    <Box sx={{
+      ...drawerHeaderStyle,
+      bgcolor: 'primary.main',
+      color: 'primary.contrastText',
+      py: 2,
+      mb: 1,
+    }}>
+      <Typography
+        variant="h5"
+        sx={{
+          fontWeight: 'bold',
+          letterSpacing: 2,
+          textAlign: 'center',
+          width: '100%',
+        }}
+      >
+        Fintrack
+      </Typography>
     </Box>
     <Box
       sx={{
@@ -52,6 +65,10 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         py: 3,
+        bgcolor: 'grey.50',
+        borderRadius: 2,
+        mx: 2,
+        mb: 1,
       }}
     >
       <IconButton
@@ -63,6 +80,8 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
           width: 96,
           height: 96,
           mb: 1,
+          boxShadow: 2,
+          bgcolor: 'background.paper',
         }}
       >
         {photoURL ? (
@@ -72,7 +91,16 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
         )}
       </IconButton>
       {auth.currentUser?.email && (
-        <Typography variant="body1" sx={{ textAlign: 'center', mt: 1 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            textAlign: 'center',
+            mt: 1,
+            color: 'text.secondary',
+            fontStyle: 'italic',
+            fontSize: '0.95rem',
+          }}
+        >
           {auth.currentUser.email}
         </Typography>
       )}
@@ -83,7 +111,14 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
         {menuItems.map((item) =>
           item.label !== 'Perfil' && (
             <ListItemButton
-              sx={drawerListItemStyle}
+              sx={{
+                ...drawerListItemStyle,
+                color: item.label === 'General' ? 'primary.main' : 'inherit',
+                '&:hover': {
+                  bgcolor: 'action.hover',
+                  color: 'primary.main',
+                },
+              }}
               key={item.label}
               onClick={() => {
                 onNavigate(item.path);
@@ -99,7 +134,14 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
       <Box>
         <List>
           <ListItemButton
-            sx={drawerListItemStyle}
+            sx={{
+              ...drawerListItemStyle,
+              color: 'error.main',
+              '&:hover': {
+                bgcolor: 'error.light',
+                color: 'white',
+              },
+            }}
             onClick={() => {
               onLogout();
               onClose();
@@ -108,11 +150,6 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
             <LogoutIcon sx={{ mr: 2 }} />
             <ListItemText primary="Cerrar sesión" />
           </ListItemButton>
-          <ListItem>
-            <IconButton edge="start" color="inherit" onClick={onClose}>
-              <ArrowBackIcon />
-            </IconButton>
-          </ListItem>
         </List>
       </Box>
     </Box>

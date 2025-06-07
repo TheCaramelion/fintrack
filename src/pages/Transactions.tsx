@@ -39,7 +39,7 @@ export default function Transactions() {
               <TransactionChart/>
             </StyledPaper>
           </Grid>
-          <Grid size={{ xs: 12, md: 8 }} sx={{ pt: { xs: 4, md: 0 } }}>
+          <Grid size="grow">
             <StyledPaper elevation={3}>
               <TransactionPieChart/>
             </StyledPaper>

@@ -3,8 +3,9 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Avatar,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
 interface TopAppBarProps {
   drawerOpen: boolean;
@@ -17,6 +18,7 @@ interface TopAppBarProps {
 
 const TopAppBar: FunctionComponent<TopAppBarProps> = ({
   onDrawerOpen,
+  photoURL,
 }) => (
   <AppBar position="fixed">
     <Toolbar>
@@ -27,7 +29,11 @@ const TopAppBar: FunctionComponent<TopAppBarProps> = ({
         sx={{ mr: 2 }}
         onClick={onDrawerOpen}
       >
-        <MenuIcon />
+        {photoURL ? (
+          <Avatar src={photoURL} alt="Perfil" />
+        ) : (
+          <AccountCircle fontSize="large" />
+        )}
       </IconButton>
     </Toolbar>
   </AppBar>

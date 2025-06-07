@@ -1,0 +1,25 @@
+@keyframes gradientBackground {
+  0% {
+    background: #2196f3;
+  }
+  20% {
+    background: #9c27b0;
+  }
+  40% {
+    background: #4caf50;
+  }
+  60% {
+    background: #ff9800;
+  }
+  80% {
+    background: #673ab7;
+  }
+  100% {
+    background: #2196f3;
+  }
+}
+
+.animated-bg {
+  animation: gradientBackground 20s ease-in-out infinite;
+  transition: background 1s;
+}

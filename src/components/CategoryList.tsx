@@ -25,6 +25,9 @@ const CategoryList = () => {
     const [error, setError] = useState<string | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [categoryToEdit, setCategoryToEdit] = useState<any>(null);
+    const [editName, setEditName] = useState('');
 
     useEffect(() => {
         let unsubscribeCategories: (() => void) | null = null;
@@ -82,7 +85,35 @@ const CategoryList = () => {
     };
 
     const handleEdit = (categoryId: string) => {
-        console.log('Editar categoría:', categoryId);
+        const category = categories.find((cat) => cat.id === categoryId);
+        if (category) {
+            setCategoryToEdit(category);
+            setEditName(category.name);
+            setEditDialogOpen(true);
+        }
+    };
+
+    const handleEditSave = async () => {
+        if (!categoryToEdit) return;
+        const user = auth.currentUser;
+        if (!user) {
+            setError('Debes estar logueado para editar categorías.');
+            return;
+        }
+        try {
+            const categoryDocRef = doc(db, 'users', user.uid, 'categories', categoryToEdit.id);
+            await categoryDocRef.update({ name: editName });
+            setCategories((prev) =>
+                prev.map((cat) =>
+                    cat.id === categoryToEdit.id ? { ...cat, name: editName } : cat
+                )
+            );
+            setEditDialogOpen(false);
+            setCategoryToEdit(null);
+        } catch (err: any) {
+            setError('Error al editar la categoría. Por favor, inténtalo de nuevo.');
+            console.error('Error al editar la categoría:', err);
+        }
     };
 
     const openDeleteDialog = (categoryId: string) => {
@@ -93,6 +124,11 @@ const CategoryList = () => {
     const closeDeleteDialog = () => {
         setCategoryToDelete(null);
         setDeleteDialogOpen(false);
+    };
+
+    const closeEditDialog = () => {
+        setEditDialogOpen(false);
+        setCategoryToEdit(null);
     };
 
     return (
@@ -158,6 +194,47 @@ const CategoryList = () => {
                     </Button>
                     <Button onClick={handleDelete} color="error" autoFocus>
                         Borrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={editDialogOpen}
+                onClose={() => setEditDialogOpen(false)}
+                aria-labelledby="edit-dialog-title"
+                maxWidth="xs"
+                fullWidth
+                slotProps={{
+                    paper: {
+                        sx: { minWidth: 320, maxWidth: 360 }
+                    }
+                }}
+            >
+                <DialogTitle id="edit-dialog-title">Editar Categoría</DialogTitle>
+                <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <DialogContentText sx={{ width: '100%', maxWidth: 280, textAlign: 'center' }}>
+                        Modifica el nombre de la categoría.
+                    </DialogContentText>
+                    <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        style={{
+                            width: '100%',
+                            maxWidth: 280,
+                            marginTop: 16,
+                            padding: 8,
+                            fontSize: 16,
+                            boxSizing: 'border-box'
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions sx={{ justifyContent: 'center' }}>
+                    <Button onClick={() => setEditDialogOpen(false)} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleEditSave} color="success" autoFocus>
+                        Guardar
                     </Button>
                 </DialogActions>
             </Dialog>

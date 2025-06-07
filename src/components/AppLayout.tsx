@@ -4,13 +4,19 @@ import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { auth } from '../firebase';
 import SideDrawer from './SideDrawer';
 import TopAppBar from './TopAppBar';
+import MiniRail from './MiniRail';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
+const miniDrawerWidth = 56;
+
 const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -41,6 +47,7 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
 
   return (
     <>
+      {!isSmallScreen && <MiniRail onNavigate={handleNavigation} />}
       <TopAppBar
         drawerOpen={drawerOpen}
         onDrawerOpen={() => setDrawerOpen(true)}
@@ -56,7 +63,14 @@ const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
         onLogout={handleLogout}
         photoURL={user?.photoURL ?? undefined}
       />
-      <main style={{ marginTop: 64, transition: 'margin 0.3s' }}>
+      <main style={{ 
+        marginTop: 64, 
+        marginLeft: isSmallScreen ? 0 : miniDrawerWidth,
+        transition: theme.transitions.create(['margin'], {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen,
+        }),
+      }}>
         {children}
       </main>
     </>
