@@ -28,18 +28,23 @@ const CategoryList = () => {
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [categoryToEdit, setCategoryToEdit] = useState<any>(null);
     const [editName, setEditName] = useState('');
+    const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
 
     useEffect(() => {
         let unsubscribeCategories: (() => void) | null = null;
+        let unsubscribeTransactions: (() => void) | null = null;
 
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (!user) {
                 setError('Debes estar logueado para ver las categorías.');
                 setCategories([]);
+                setCategoryCounts({});
                 return;
             }
 
             const categoriesRef = collection(db, 'users', user.uid, 'categories');
+            const transactionsRef = collection(db, 'users', user.uid, 'transactions');
+
             unsubscribeCategories = onSnapshot(
                 categoriesRef,
                 (querySnapshot) => {
@@ -54,10 +59,29 @@ const CategoryList = () => {
                     console.error('Error al obtener las categorías:', err);
                 }
             );
+
+            unsubscribeTransactions = onSnapshot(
+                transactionsRef,
+                (querySnapshot) => {
+                    const counts: Record<string, number> = {};
+                    querySnapshot.docs.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.category) {
+                            counts[data.category] = (counts[data.category] || 0) + 1;
+                        }
+                    });
+                    setCategoryCounts(counts);
+                },
+                (err) => {
+                    setError('Error al obtener las transacciones.');
+                    console.error('Error al obtener las transacciones:', err);
+                }
+            );
         });
 
         return () => {
             if (unsubscribeCategories) unsubscribeCategories();
+            if (unsubscribeTransactions) unsubscribeTransactions();
             unsubscribeAuth();
         };
     }, []);
@@ -163,7 +187,16 @@ const CategoryList = () => {
                                 </>
                             }
                         >
-                            <ListItemText primary={category.name} />
+                            <ListItemText
+                              primary={
+                                <>
+                                  {category.name}
+                                  <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                                    ({categoryCounts[category.name] || 0})
+                                  </Typography>
+                                </>
+                              }
+                            />
                         </ListItem>
                     ))}
                 </List>

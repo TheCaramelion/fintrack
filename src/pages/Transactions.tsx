@@ -12,39 +12,39 @@ export default function Transactions() {
   useAuthRedirect();
 
   return (
-      <AppLayout>
+    <AppLayout>
         <Grid container spacing={4}>
-          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
-            <StyledPaper elevation={3}>
-              <TransactionForm/>
-            </StyledPaper>
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
-            <StyledPaper elevation={3}>
-              <TransactionList/>
-            </StyledPaper>
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
-            <StyledPaper elevation={3}>
-              <TransactionFilter/>
-            </StyledPaper>
-          </Grid>
+            <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
+                <StyledPaper elevation={3}>
+                    <TransactionForm />
+                </StyledPaper>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
+                <StyledPaper elevation={3}>
+                    <TransactionList />
+                </StyledPaper>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
+                <StyledPaper elevation={3}>
+                    <TransactionFilter />
+                </StyledPaper>
+            </Grid>
         </Grid>
 
-        <Box my={8}/>
+        <Box my={8} />
 
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
-            <StyledPaper elevation={3}>
-              <TransactionChart/>
-            </StyledPaper>
-          </Grid>
-          <Grid size="grow">
-            <StyledPaper elevation={3}>
-              <TransactionPieChart/>
-            </StyledPaper>
-          </Grid>
+        <Grid container spacing={2} alignItems="flex-start">
+            <Grid size={{ xs: 12, md: 4 }} sx={{ pt: { xs: 4, md: 0 } }}>
+                <StyledPaper elevation={3}>
+                    <TransactionChart />
+                </StyledPaper>
+            </Grid>
+            <Grid size={{ xs: 12, md: 8 }} sx={{ pt: { xs: 4, md: 0 } }}>
+                <StyledPaper elevation={3}>
+                    <TransactionPieChart />
+                </StyledPaper>
+            </Grid>
         </Grid>
-      </AppLayout>
+    </AppLayout>
   );
 }

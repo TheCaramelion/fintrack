@@ -17,7 +17,7 @@ interface SideDrawerProps {
   displayName?: string;
 }
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const menuItems = [
   { icon: <DashboardIcon />, label: 'General', path: '/dashboard' },
@@ -39,6 +39,11 @@ const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     open={open}
     onClose={onClose}
     sx={{ width: drawerWidth }}
+    slotProps={{
+      paper: {
+        sx: { width: drawerWidth }
+      }
+    }}
   >
     <Box sx={{
       ...drawerHeaderStyle,
