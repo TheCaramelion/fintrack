@@ -198,7 +198,7 @@ const TransactionList = () => {
                             }
                         >
                             <ListItemText
-                                primary={`${transaction.category} - ${transaction.amount}€`}
+                                primary={`${transaction.category ? transaction.category : 'No Definido'} - ${transaction.amount}€`}
                                 secondary={new Date(transaction.createdAt.seconds * 1000).toLocaleDateString()}
                             />
                             <Chip

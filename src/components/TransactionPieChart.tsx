@@ -30,10 +30,11 @@ const TransactionPieChart = () => {
 
                     for (const doc of querySnapshot.docs) {
                         const data = doc.data();
+                        const categoryLabel = data.category ? data.category : 'No Definido';
                         if (data.type === 'income') {
-                            incomeMap[data.category] = (incomeMap[data.category] || 0) + data.amount;
+                            incomeMap[categoryLabel] = (incomeMap[categoryLabel] || 0) + data.amount;
                         } else if (data.type === 'expense') {
-                            expenseMap[data.category] = (expenseMap[data.category] || 0) + data.amount;
+                            expenseMap[categoryLabel] = (expenseMap[categoryLabel] || 0) + data.amount;
                         }
                     }
 

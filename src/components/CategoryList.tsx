@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
-import { collection, doc, deleteDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, writeBatch, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import {
     List,
@@ -87,7 +87,7 @@ const CategoryList = () => {
     }, []);
 
     const handleDelete = async () => {
-        if (!categoryToDelete) return;
+        if (!categoryToDelete) return; // categoryToDelete is the ID
 
         const user = auth.currentUser;
         if (!user) {
@@ -95,16 +95,49 @@ const CategoryList = () => {
             return;
         }
 
-        try {
-            const categoryDocRef = doc(db, 'users', user.uid, 'categories', categoryToDelete);
-            await deleteDoc(categoryDocRef);
+        // Find the category object from the state to get its name
+        const categoryObject = categories.find(cat => cat.id === categoryToDelete);
+        
+        if (!categoryObject) {
+            setError('Categoría no encontrada. No se pudo completar la eliminación.');
+            console.error('Category with ID not found in state for deletion:', categoryToDelete);
+            setCategoryToDelete(null); // Close dialog
+            return;
+        }
+        
+        const categoryNameForQuery = categoryObject.name; // Use the category NAME for querying transactions
+        const categoryIdForDeletion = categoryToDelete;   // Use the category ID for deleting the category document
 
-            setCategories((prev) => prev.filter((category) => category.id !== categoryToDelete));
-            setCategoryToDelete(null);
-            setDeleteDialogOpen(false);
+        try {
+            const categoryDocRef = doc(db, 'users', user.uid, 'categories', categoryIdForDeletion);
+            
+            const transactionsRef = collection(db, 'users', user.uid, 'transactions');
+            // Query transactions where the 'category' field (which stores the name) 
+            // matches the name of the category being deleted.
+            const q = query(transactionsRef, where('category', '==', categoryNameForQuery)); 
+            const querySnapshot = await getDocs(q);
+
+            const batch = writeBatch(db);
+
+            querySnapshot.forEach((transactionDoc) => {
+                const transactionDocRef = doc(db, 'users', user.uid, 'transactions', transactionDoc.id);
+                batch.update(transactionDocRef, { category: null });
+            });
+
+            // Add deletion of the category document (using its ID) to the batch
+            batch.delete(categoryDocRef);
+
+            // Commit all batched operations
+            await batch.commit();
+
+            // Optimistically update UI
+            setCategories((prev) => prev.filter((category) => category.id !== categoryIdForDeletion));
+            setCategoryToDelete(null); // Close the dialog
+            // Consider adding a success message if desired
+
         } catch (err: any) {
-            setError('Error al borrar la categoría. Por favor, inténtalo de nuevo.');
-            console.error('Error al borrar la categoría:', err);
+            console.error('Error al borrar categoría y actualizar transacciones:', err);
+            setError(err.message || 'Error al borrar la categoría.');
         }
     };
 
