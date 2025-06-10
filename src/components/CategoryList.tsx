@@ -90,7 +90,7 @@ const CategoryList = () => {
     }, []);
 
     const handleDelete = async () => {
-        if (!categoryToDelete) return; // categoryToDelete is the ID
+        if (!categoryToDelete) return;
 
         const user = auth.currentUser;
         if (!user) {
@@ -98,25 +98,22 @@ const CategoryList = () => {
             return;
         }
 
-        // Find the category object from the state to get its name
         const categoryObject = categories.find(cat => cat.id === categoryToDelete);
         
         if (!categoryObject) {
             setError('Categoría no encontrada. No se pudo completar la eliminación.');
             console.error('Category with ID not found in state for deletion:', categoryToDelete);
-            setCategoryToDelete(null); // Close dialog
+            setCategoryToDelete(null);
             return;
         }
         
-        const categoryNameForQuery = categoryObject.name; // Use the category NAME for querying transactions
-        const categoryIdForDeletion = categoryToDelete;   // Use the category ID for deleting the category document
+        const categoryNameForQuery = categoryObject.name;
+        const categoryIdForDeletion = categoryToDelete;
 
         try {
             const categoryDocRef = doc(db, 'users', user.uid, 'categories', categoryIdForDeletion);
             
             const transactionsRef = collection(db, 'users', user.uid, 'transactions');
-            // Query transactions where the 'category' field (which stores the name) 
-            // matches the name of the category being deleted.
             const q = query(transactionsRef, where('category', '==', categoryNameForQuery)); 
             const querySnapshot = await getDocs(q);
 
@@ -127,16 +124,12 @@ const CategoryList = () => {
                 batch.update(transactionDocRef, { category: null });
             });
 
-            // Add deletion of the category document (using its ID) to the batch
             batch.delete(categoryDocRef);
 
-            // Commit all batched operations
             await batch.commit();
 
-            // Optimistically update UI
             setCategories((prev) => prev.filter((category) => category.id !== categoryIdForDeletion));
-            setCategoryToDelete(null); // Close the dialog
-            // Consider adding a success message if desired
+            setCategoryToDelete(null);
 
         } catch (err: any) {
             console.error('Error al borrar categoría y actualizar transacciones:', err);
@@ -310,7 +303,6 @@ const CategoryList = () => {
                             boxSizing: 'border-box'
                         }}
                     />
-                    {/* Color picker */}
                     <Box sx={{ mt: 2, mb: 1, width: '100%' }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>Color</Typography>
                         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -331,7 +323,6 @@ const CategoryList = () => {
                             ))}
                         </Box>
                     </Box>
-                    {/* Icon picker */}
                     <Box sx={{ mt: 2, mb: 1, width: '100%' }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>Icono</Typography>
                         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
