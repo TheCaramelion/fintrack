@@ -17,6 +17,7 @@ import {
     DialogTitle,
     Button,
 } from '@mui/material';
+import { COLORS, ICONS } from '../constants/categoryOptions';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -28,6 +29,8 @@ const CategoryList = () => {
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [categoryToEdit, setCategoryToEdit] = useState<any>(null);
     const [editName, setEditName] = useState('');
+    const [editColor, setEditColor] = useState(COLORS[0]);
+    const [editIcon, setEditIcon] = useState(ICONS[0].name);
     const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
 
     useEffect(() => {
@@ -146,6 +149,8 @@ const CategoryList = () => {
         if (category) {
             setCategoryToEdit(category);
             setEditName(category.name);
+            setEditColor(category.color || COLORS[0]);
+            setEditIcon(category.icon || ICONS[0].name);
             setEditDialogOpen(true);
         }
     };
@@ -159,10 +164,26 @@ const CategoryList = () => {
         }
         try {
             const categoryDocRef = doc(db, 'users', user.uid, 'categories', categoryToEdit.id);
-            await updateDoc(categoryDocRef, { name: editName });
+
+            if (categoryToEdit.name !== editName) {
+                const transactionsRef = collection(db, 'users', user.uid, 'transactions');
+                const q = query(transactionsRef, where('category', '==', categoryToEdit.name));
+                const querySnapshot = await getDocs(q);
+
+                const batch = writeBatch(db);
+                querySnapshot.forEach((transactionDoc) => {
+                    const transactionDocRef = doc(db, 'users', user.uid, 'transactions', transactionDoc.id);
+                    batch.update(transactionDocRef, { category: editName });
+                });
+                await batch.commit();
+            }
+
+            await updateDoc(categoryDocRef, { name: editName, color: editColor, icon: editIcon });
             setCategories((prev) =>
                 prev.map((cat) =>
-                    cat.id === categoryToEdit.id ? { ...cat, name: editName } : cat
+                    cat.id === categoryToEdit.id
+                        ? { ...cat, name: editName, color: editColor, icon: editIcon }
+                        : cat
                 )
             );
             setEditDialogOpen(false);
@@ -274,7 +295,7 @@ const CategoryList = () => {
                 <DialogTitle id="edit-dialog-title">Editar Categoría</DialogTitle>
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <DialogContentText sx={{ width: '100%', maxWidth: 280, textAlign: 'center' }}>
-                        Modifica el nombre de la categoría.
+                        Modifica el nombre, color o icono de la categoría.
                     </DialogContentText>
                     <input
                         type="text"
@@ -289,6 +310,44 @@ const CategoryList = () => {
                             boxSizing: 'border-box'
                         }}
                     />
+                    {/* Color picker */}
+                    <Box sx={{ mt: 2, mb: 1, width: '100%' }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>Color</Typography>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+                            {COLORS.map((c) => (
+                                <Button
+                                    key={c}
+                                    type="button"
+                                    variant={editColor === c ? 'contained' : 'outlined'}
+                                    onClick={() => setEditColor(c)}
+                                    sx={{
+                                        minWidth: 32,
+                                        minHeight: 32,
+                                        bgcolor: c,
+                                        border: editColor === c ? '2px solid #000' : undefined,
+                                        '&:hover': { bgcolor: c },
+                                    }}
+                                />
+                            ))}
+                        </Box>
+                    </Box>
+                    {/* Icon picker */}
+                    <Box sx={{ mt: 2, mb: 1, width: '100%' }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>Icono</Typography>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+                            {ICONS.map((ic) => (
+                                <Button
+                                    key={ic.name}
+                                    type="button"
+                                    variant={editIcon === ic.name ? 'contained' : 'outlined'}
+                                    onClick={() => setEditIcon(ic.name)}
+                                    sx={{ minWidth: 32, minHeight: 32, fontSize: 22 }}
+                                >
+                                    {ic.icon}
+                                </Button>
+                            ))}
+                        </Box>
+                    </Box>
                 </DialogContent>
                 <DialogActions sx={{ justifyContent: 'center' }}>
                     <Button onClick={() => setEditDialogOpen(false)} color="primary">

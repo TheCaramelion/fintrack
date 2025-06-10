@@ -3,18 +3,7 @@ import { auth, db } from '../firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Paper, Typography, Box, Alert } from '@mui/material';
-import CategoryIcon from '@mui/icons-material/Category';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import HomeIcon from '@mui/icons-material/Home';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import CelebrationIcon from '@mui/icons-material/Celebration';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import WorkIcon from '@mui/icons-material/Work';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
-import FlightIcon from '@mui/icons-material/Flight';
-import SchoolIcon from '@mui/icons-material/School';
+import { COLORS, ICONS } from '../constants/categoryOptions';
 
 interface CategorySummary {
   label: string;
@@ -28,20 +17,9 @@ function getStartOfCurrentMonth() {
   return new Date(now.getFullYear(), now.getMonth(), 1);
 }
 
-const ICON_MAP: Record<string, ReactNode> = {
-  category: <CategoryIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  fastfood: <FastfoodIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  car: <DirectionsCarIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  home: <HomeIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  lightbulb: <LightbulbIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  celebration: <CelebrationIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  shopping: <ShoppingCartIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  work: <WorkIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  creditcard: <CreditCardIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  hospital: <LocalHospitalIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  flight: <FlightIcon sx={{ color: '#fff', fontSize: 20 }} />,
-  school: <SchoolIcon sx={{ color: '#fff', fontSize: 20 }} />,
-};
+const ICON_MAP: Record<string, ReactNode> = Object.fromEntries(
+  ICONS.map(ic => [ic.name, ic.icon])
+);
 
 export default function CategorySummaryCards({
   title,
@@ -105,7 +83,7 @@ export default function CategorySummaryCards({
           id: doc.id,
           name: doc.data().name,
           icon: doc.data().icon || 'category',
-          color: doc.data().color || '#1976d2',
+          color: doc.data().color || COLORS[0],
         }));
 
         unsubscribeTransactions = onSnapshot(transactionsRef, (txSnap) => {

@@ -1,37 +1,8 @@
 import { useState, type FormEvent } from 'react';
-import { TextField, Button, Box, Typography, Alert, ToggleButtonGroup, ToggleButton, Grid } from '@mui/material';
+import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { auth, db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
-
-import CategoryIcon from '@mui/icons-material/Category';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import HomeIcon from '@mui/icons-material/Home';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import CelebrationIcon from '@mui/icons-material/Celebration';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import WorkIcon from '@mui/icons-material/Work';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
-import FlightIcon from '@mui/icons-material/Flight';
-import SchoolIcon from '@mui/icons-material/School';
-
-// Pre-set options
-const COLORS = ['#1976d2', '#388e3c', '#fbc02d', '#d32f2f', '#7b1fa2', '#ff9800', '#0097a7', '#455a64'];
-const ICONS = [
-    { name: 'category', icon: <CategoryIcon /> },
-    { name: 'fastfood', icon: <FastfoodIcon /> },
-    { name: 'car', icon: <DirectionsCarIcon /> },
-    { name: 'home', icon: <HomeIcon /> },
-    { name: 'lightbulb', icon: <LightbulbIcon /> },
-    { name: 'celebration', icon: <CelebrationIcon /> },
-    { name: 'shopping', icon: <ShoppingCartIcon /> },
-    { name: 'work', icon: <WorkIcon /> },
-    { name: 'creditcard', icon: <CreditCardIcon /> },
-    { name: 'hospital', icon: <LocalHospitalIcon /> },
-    { name: 'flight', icon: <FlightIcon /> },
-    { name: 'school', icon: <SchoolIcon /> },
-];
+import { COLORS, ICONS } from '../constants/categoryOptions';
 
 const CategoryForm = () => {
     const [categoryName, setCategoryName] = useState('');
@@ -101,38 +72,38 @@ const CategoryForm = () => {
                 />
 
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>Color</Typography>
-                <Grid container spacing={1} sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center', mb: 2 }}>
                     {COLORS.map((c) => (
-                        <Grid key={c}>
-                            <Button
-                                type="button"
-                                variant={color === c ? 'contained' : 'outlined'}
-                                onClick={() => setColor(c)}
-                                sx={{
-                                    minWidth: 36,
-                                    minHeight: 36,
-                                    bgcolor: c,
-                                    border: color === c ? '2px solid #000' : undefined,
-                                    '&:hover': { bgcolor: c },
-                                }}
-                            />
-                        </Grid>
+                        <Button
+                            key={c}
+                            type="button"
+                            variant={color === c ? 'contained' : 'outlined'}
+                            onClick={() => setColor(c)}
+                            sx={{
+                                minWidth: 32,
+                                minHeight: 32,
+                                bgcolor: c,
+                                border: color === c ? '2px solid #000' : undefined,
+                                '&:hover': { bgcolor: c },
+                            }}
+                        />
                     ))}
-                </Grid>
+                </Box>
 
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>Icono</Typography>
-                <ToggleButtonGroup
-                    value={icon}
-                    exclusive
-                    onChange={(_, val) => val && setIcon(val)}
-                    sx={{ flexWrap: 'wrap', mb: 2 }}
-                >
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center', mb: 2 }}>
                     {ICONS.map((ic) => (
-                        <ToggleButton key={ic.name} value={ic.name} sx={{ fontSize: 22, px: 2 }}>
+                        <Button
+                            key={ic.name}
+                            type="button"
+                            variant={icon === ic.name ? 'contained' : 'outlined'}
+                            onClick={() => setIcon(ic.name)}
+                            sx={{ minWidth: 32, minHeight: 32, fontSize: 22 }}
+                        >
                             {ic.icon}
-                        </ToggleButton>
+                        </Button>
                     ))}
-                </ToggleButtonGroup>
+                </Box>
 
                 <Button
                     type="submit"
