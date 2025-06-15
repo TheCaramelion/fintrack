@@ -95,6 +95,7 @@ const CategoryList = () => {
         const user = auth.currentUser;
         if (!user) {
             setError('Debes estar logueado para borrar categorías.');
+            setDeleteDialogOpen(false);
             return;
         }
 
@@ -104,6 +105,7 @@ const CategoryList = () => {
             setError('Categoría no encontrada. No se pudo completar la eliminación.');
             console.error('Category with ID not found in state for deletion:', categoryToDelete);
             setCategoryToDelete(null);
+            setDeleteDialogOpen(false);
             return;
         }
         
@@ -130,10 +132,12 @@ const CategoryList = () => {
 
             setCategories((prev) => prev.filter((category) => category.id !== categoryIdForDeletion));
             setCategoryToDelete(null);
+            setDeleteDialogOpen(false);
 
         } catch (err: any) {
             console.error('Error al borrar categoría y actualizar transacciones:', err);
             setError(err.message || 'Error al borrar la categoría.');
+            setDeleteDialogOpen(false);
         }
     };
 
@@ -344,7 +348,10 @@ const CategoryList = () => {
                     <Button onClick={() => setEditDialogOpen(false)} color="primary">
                         Cancelar
                     </Button>
-                    <Button onClick={handleEditSave} color="success" autoFocus>
+                    <Button onClick={async () => {
+                        await handleEditSave();
+                        setEditDialogOpen(false);
+                    }} color="success" autoFocus>
                         Guardar
                     </Button>
                 </DialogActions>

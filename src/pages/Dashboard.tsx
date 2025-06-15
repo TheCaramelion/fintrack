@@ -30,12 +30,12 @@ export default function Dashboard() {
         </Grid>
         <Grid size={{ xs: 12, md: 6 }} sx={{ pt: { xs: 4, md: 0 }, mt: { xs: 4, md: 6 } }}>
           <StyledPaper elevation={3}>
-            <CategorySummaryCards title="Resumen de gastos" type="expense" />
+            <CategorySummaryCards title="Resumen de gastos mensual" type="expense" />
           </StyledPaper>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }} sx={{ pt: { xs: 4, md: 0 }, mt: { xs: 4, md: 6 } }}>
           <StyledPaper elevation={3}>
-            <CategorySummaryCards title="Resumen de ingresos" type="income" />
+            <CategorySummaryCards title="Resumen de ingresos mensual" type="income" />
           </StyledPaper>
         </Grid>
       </Grid>
